@@ -1,0 +1,12 @@
+# macOS
+.DS_Store
+
+# IBM Qiskit course material (third-party; recordings exceed GitHub's 100 MB limit)
+Unit_*/
+
+# Python
+__pycache__/
+*.pyc
+.venv/
+venv/
+.ipynb_checkpoints/
