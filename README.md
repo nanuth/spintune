@@ -19,13 +19,13 @@ SpinTune tests whether history (earlier cells on the same chip, and logs from ea
 - **A reproducible benchmark.** Fixed simulated fleets, metered measurement queries and one scoring contract, so any tuner can be scored on its declared state, margin, cost, time and wrong-declaration rate.
 - **A Qiskit CZ error-budget study.** A model of the two-qubit gate built from the device Hamiltonian, composing charge noise, dephasing and pulse error.
 
-The full pitch, scope, non-claims and plan are in [`SpinTune_Design_v5.md`](SpinTune_Design_v5.md).
+The full pitch, scope, non-claims and plan are in [`architecture/`](architecture/README.md), one file per design section.
 
 ## Where to start
 
 | If you want… | Read |
 |---|---|
-| The current design | [`SpinTune_Design_v5.md`](SpinTune_Design_v5.md) |
+| The current design (v5) | [`architecture/README.md`](architecture/README.md) |
 | The original pitch notes, Q&A prep and questions for Equal1 | [`SPINTUNE.md`](SPINTUNE.md) |
 | The scripts behind every *[measured]* claim | [`checks/README.md`](checks/README.md) |
 | The implementation checklist | [`bobi_resources/PLAN.md`](bobi_resources/PLAN.md) |
@@ -36,7 +36,8 @@ The full pitch, scope, non-claims and plan are in [`SpinTune_Design_v5.md`](Spin
 .
 ├── SPINTUNE.md                       Original pitch notes
 ├── SpinTune_Design_Proposition.md    First design
-├── SpinTune_Design_v2.md … v5.md     Design iterations (v5 is current)
+├── SpinTune_Design_v2.md … v4.md     Earlier design iterations
+├── architecture/                     Current design (v5), one file per section; README.md is the index
 ├── FEASIBILITY_REVIEW.md             Review of the proposition
 ├── FEASIBILITY_REVIEW_V2.md          Review of v2
 ├── FEASIBILITY_REVIEW_V3.md          Review of v3
@@ -47,7 +48,7 @@ The full pitch, scope, non-claims and plan are in [`SpinTune_Design_v5.md`](Spin
 └── checks/                           Feasibility scripts (see checks/README.md)
 ```
 
-Each design version supersedes the one before it and responds to the review in between. The v5 header lists its changes from v4.
+Each design version supersedes the one before it and responds to the review in between. The header of [`architecture/README.md`](architecture/README.md) lists v5's changes from v4.
 
 ## Running the checks
 
