@@ -1,0 +1,38 @@
+[project]
+name = "spintune"
+version = "0.1.0"
+description = "SpinTune: metered auto-tuning of spin-qubit double dots"
+readme = "README.md"
+requires-python = "==3.12.*"
+dependencies = [
+    "matplotlib>=3.11.2",
+    "qarray==1.6.0",
+    "qiskit==2.6.1",
+    "qiskit-aer==0.18.0",
+    "qiskit-experiments==0.14.2",
+    "qiskit-ibm-runtime>=0.51.0",
+    "samplomatic==0.21.0",
+    "scikit-image>=0.26.0",
+    "scipy>=1.18.1",
+    "torch>=2.15.0",
+]
+
+[project.optional-dependencies]
+bo = [
+    "botorch>=0.18.1",
+]
+raw = [
+    "h5py>=3.16.0",
+]
+
+[dependency-groups]
+dev = [
+    "pytest>=9.2.0",
+]
+
+[build-system]
+requires = ["uv_build>=0.11.9,<0.12"]
+build-backend = "uv_build"
+
+[tool.uv.build-backend]
+module-root = ""
