@@ -123,14 +123,106 @@ The open choice is the **noiseless sensor signal**:
 | QArray's `ChargeSensedDotArray`, with virtual compensation on QT0 | Closer to the physical sensor | Dot A : dot B step ratio and the stress scenarios are indirect |
 | Our own occupancy-to-step model: signal = s_A·n_A + s_B·n_B, ratio 3 ([§7.2](architecture/07-fleet.md#72-parameters-defaults-and-sweep-ranges)), optional Coulomb-peak lineshape for the detuning and sign-flip stress | The step ratio, detuning, sign flip and SEB background transitions ([§5.1](architecture/05-reading-the-device.md#51-the-anchor-certificate-design-call) b) are explicit parameters | Our own model to justify |
 
-- [ ] Spike both on one cell: ray and window queries, speed, step ratio control. **Leaning: our own step model.**
-- [ ] Record the choice in `architecture/` as a design call
+**Decision (2 Nov 2026): QArray's `ChargeSensedDotArray`**, with QArray's own noise turned off. The cost is that each stress knob has to be set indirectly:
+
+- Dot A : dot B step ratio (default 3, swept 2–4) comes from the sensor–dot capacitances. They have to be calibrated per ratio, and the ratio drifts along the sensor peak.
+- Compensation error (0–20%) comes from deliberately mis-setting the QT0 virtual gate.
+- SEB background transitions aren't native to QArray, so `device.py` adds them on top.
+
+- [x] Spike on one cell: ray and window queries, speed, and whether the step ratio can be held at 2, 3 and 4 (2 Nov, `checks/sensor_spike.py`, recipe in 2.2 step 6)
+
+**Spike result (2 Nov).** Pass bar, fixed before the run: the per-state A:B step ratio stays within ±20% of target over states (0..2, 0..2), with no sign flip at nominal compensation. One cell; E_c 4.0/4.4 meV, r_m 0.07, SEB E_c 2 meV, γ = 0.2 meV [assumed]; 50 mV window at 0.25 mV pitch, T = 0.
+
+| Dot-A step / γ | ε (compensation error) | r = 2 | r = 3 | r = 4 |
+|---|---|---|---|---|
+| **0.25** | **0** | **PASS** (0.94–1.14 × target) | **PASS** (0.92–1.15) | **PASS** (0.91–1.15) |
+| 0.5 | 0 | fail: sign flip at (0,0) | fail: sign flip | fail: up to 11× at (0,0) |
+| either | 0.2 | fail: the SEB drifts ±5γ across the window, through several peaks | fail | fail |
+
+- **The QArray path holds at nominal settings.** The ratio is exact at linear order and drifts from about 1.15× target at (0,0) to about 0.92× at (2,1), because of the Lorentzian's curvature (as expected in the 2.1 caveat). Only 8 of the 9 states had both step types in the window; (2,2) was missing.
+- **Design constraint: dot-A step ≤ 0.25 γ.** At 0.5 γ, the (0,0)→(2,2) detuning span (≈ 1.5 γ) is wider than the flank, so the first steps cross the peak.
+- **The ε = 0–20% stress is extreme at γ = 0.2 meV.** The SEB's QT1 lever arm (0.15 [assumed]) × 20% × 50 mV ≈ 1.5 meV ≈ 7 γ of drift, so the sensor runs through Coulomb oscillations and a per-state ratio means nothing. That may be the right stress, but the metric should become "fraction of the window on a usable flank", and the range needs a real γ and SEB lever arm (on the Equal1 list).
+- **Speed:** ~0.3 ms per 65-pixel ray, 0.8 ms per 32×32 window, 2.3 ms per 64×64 window (~0.6 µs/pixel), the same at T = 300 mK. Not a bottleneck.
+- **Gotchas found** (all in 2.2 step 6): `ChargeSensedDotArray` ignores `charge_carrier` and loads electrons at **negative** voltages; it has **no lead capacitance for the sensor**; and some lever-arm targets are **infeasible** (dot B's QT0 lever arm of 0.005 came out as a negative capacitance through the sensor coupling; 0.02 works).
+
+- [ ] Record the choice in `architecture/` as a design call, with the spike table above
+- [ ] Decide the compensation-error stress: keep ε ∈ [0, 0.2] with a "usable flank fraction" metric, or narrow it once γ and the SEB lever arms are known
 
 ### 2.2 Units mapping
 
 [§7.2](architecture/07-fleet.md#72-parameters-defaults-and-sweep-ranges) is in physical units (lever arm 0.27 eV/V, charging energy 4 meV, so P ≈ 15 mV). The check scripts use scale-free model units with an `mv` conversion factor.
 
-- [ ] Write down one mapping from the §7.2 hierarchy (wafer → chip → cell) to QArray's `Cdd` and `Cgd`, before A1
+- [x] Write down one mapping from the §7.2 hierarchy (wafer → chip → cell) to QArray's `Cdd` and `Cgd`, before A1 (2 Nov: the recipe below, evidence in `checks/qarray_units.py`, `checks/qarray_recipe.py`, `checks/sensor_spike.py`)
+
+#### QArray's unit convention (read from the source, checked numerically on 2 Nov)
+
+- QArray's free energy is F = (n − Cgd·V)ᵀ · cdd⁻¹ · (n − Cgd·V) (`python_implementations/helper_functions.py`). There is **no ½ and no e**. `cdd` is the Maxwell matrix that QArray builds from the `Cdd`/`Cgd` you pass in.
+- k_B is in eV/K and multiplies `T` (`ground_state.py`). So **V is in mV, F is in meV and `T` is in mK**: the §7.2 setting `T=300` means 0.3 K.
+- Capacitances are therefore in e/mV, and the missing ½ puts a factor 2 into every energy:
+
+| Quantity | QArray expression | Single-dot check (E_c = 4 meV, P = 15 mV, T = 300) |
+|---|---|---|
+| Charging energy E_c,i [meV] | 2·(cdd⁻¹)_ii | `Cg = 1/P`, `C_Σ = 2/E_c` → period 15.00 mV ✓ |
+| Mutual charging energy E_cm [meV] | 2·(cdd⁻¹)_AB | — |
+| Lever-arm matrix α_ij [meV/mV = eV/V] | 2·(cdd⁻¹·Cgd)_ij | 10–90% thermal width 0.42 mV, predicted 2·ln9·k_BT/α = 0.43 mV ✓ |
+| Period of dot i along its own gate [mV] | E_c,i / α_ii | — |
+| Line shift r_m (fraction of P when the other dot gains an electron) | E_cm / E_c,i | — |
+
+This is the standard constant-interaction model (lever arm α = C_g/C_Σ, E_c = e²/C_Σ; for double dots, E_c1 = (e²/C_1)/(1 − C_m²/(C_1C_2)), after van der Wiel et al., RMP 75, 1 (2003)), with QArray's factor 2 folded in. Thermal broadening is sub-pixel at 0.3 K (0.43 mV against the 2 mV pitch), so it only matters for the OOD-hot set.
+
+#### The recipe (exact inverse, checked on 2 Nov)
+
+1. **Sample the hierarchy** (§7.1, §7.2): wafer offset and Δ_edge → chip offset σ_die, radial term Δ_edge·(r/R)², α scale, x scale → cell α factors per dot, E_c, cross-coupling x, E_cm, first-electron offsets σ_cell.
+2. **Build the target energies.** E_c,A, E_c,B, E_cm and the lever-arm matrix α (rows: dots A, B; columns: QT1, QA1; diagonal from the sampled α, off-diagonal x·α).
+3. **Convert to QArray's matrices.**
+   - K = ½·[[E_c,A, E_cm], [E_cm, E_c,B]] (this is cdd⁻¹)
+   - cdd = K⁻¹, Cgd = K⁻¹·α/2
+   - non-Maxwell inputs: Cm = −cdd_AB, C_lead,i = cdd_ii − Cm − Σ_g Cgd_ig, then `DotArray(Cdd=[[C_lead,A, Cm], [Cm, C_lead,B]], Cgd=Cgd, T=T_mK)`
+   - Check run: E_c = (4.0, 4.4) meV, E_cm = 0.8 meV and α = [[0.27, 0.0675], [0.06, 0.25]] come back exactly, and the measured period is 14.82 mV against 14.81 predicted.
+4. **Physicality check:** every input capacitance ≥ 0 (Cm, Cds, every Cgd entry), **and the physical lead capacitance ≥ 0: (cdd_ii − Σ_j≠i |cdd_ij|)/2 − Σ_g Cgd_ig ≥ 0.** QArray's own C_lead ≥ 0 is too weak by the factor 2: it allows lever arms summing to 2, against a physical limit of 1. Cgd can come out negative when a target lever arm is below what the dot already gets through its neighbours (seen in the spike). Resample failures, and log the rejection rate, because rejection reshapes the §7.2 distributions.
+5. **Offsets** (σ_wafer, σ_die, radial term, σ_cell, Δ_nom) are shifts of the plane gates, applied in `device.py` before QArray is called: V → V − Δ, with Δ = α⁻¹·diag(α)·δ, where δ_i is dot i's first-electron shift in mV along its own gate (same idea as `checks/prior_check.py:19`).
+6. **Sensor** (2.1, `ChargeSensedDotArray`; checked in the 2 Nov spike). Same inverse as step 3, one size up:
+   - K_full = ½·[[E_c,A, E_cm, s_A], [E_cm, E_c,B, s_A/r], [s_A, s_A/r, E_c,s]], where s_i is the sensor detuning shift per electron on dot i (meV) and r the A:B ratio. This sets the ratio **exactly** at linear order: no calibration loop.
+   - cdd_full = K_full⁻¹, Cgd_full = K_full⁻¹·α_full/2, with α_full 3 × 4 (rows A, B, sensor; columns QT0, QT1, QT2, QA1).
+   - Non-Maxwell inputs: Cm = −cdd_AB, Cds = −cdd_{s,A/B}, dot C_lead = cdd_ii − Cm − Cds_i − Σ Cgd_i.
+   - **The sensor has no lead-capacitance slot in QArray**, so add a 5th dummy gate held at 0 V with Cgs_dummy = cdd_ss − Σ Cds − Σ Cgs. Without it, E_c,s and the sensor lever arms can't be set independently.
+   - **Sign:** `ChargeSensedDotArray` ignores `charge_carrier` and loads electrons at negative voltages. `device.py` passes −V.
+   - Signal = Σ lorentzian(ΔF_s, 0, γ), with `coulomb_peak_width` γ in meV. Keep s_A ≤ 0.25 γ, and place the operating point so the (0,0)→(2,2) detuning span is centred on the max-slope flank at γ/√3.
+   - Compensation: the sensor lever arms are α_s = 2·(cdd_full⁻¹·Cgd_full)_s, the QT0 coefficient for gate g is k_g = −α_s,g/α_s,QT0, and the stress uses k_g·(1 − ε).
+
+#### Ask Equal1's physicists (feeds [§14](architecture/14-questions-for-equal1.md) Q1, Q6)
+
+Everything has a §7.2 default, so none of this blocks A1. Answers replace defaults.
+
+- [ ] Which two gates span the charge-tuning plane, and **which gate the 0.27 eV/V lever arm refers to**
+- [ ] The lever-arm matrix of both dots on those gates, including cross-coupling (one cell is enough)
+- [ ] E_c of each dot and the mutual E_cm, or equivalently how far one dot's lines jump when the other dot loads
+- [ ] Cryogenic spread of first-electron voltage within a chip and between chips, and how much of it is shared within a chip
+- [ ] Cell-to-cell spread of lever arm and E_c, and how correlated the two dots of the same cell are
+- [ ] Electron temperature, as opposed to the 0.3 K fridge temperature
+- [ ] Sensor: dot A : dot B step ratio from an existing stability diagram, SEB peak width, SEB lever arms on QT0 and QT1, how they compensate it and the residual, and how often SEB lines overlay the double-dot response
+
+#### Still open (ours to decide)
+
+- [x] **Nominal E_cm** (signed off 2 Nov). §7.2 says "±20% around nominal (r_m ≤ 0.3)" but gives no nominal. Decision: default **r_m ≈ 0.07** (E_cm = 0.07·E_c) [assumed], swept up to **0.23**.
+  - 0.07 matches what `checks/anchor_check.py:13` already uses (Cm ≈ 0.1, C_Σ ≈ 1.35, so r_m ≈ 0.05–0.1), which keeps the default in the regime the checks have tested.
+  - 0.23 ≈ 0.3/1.3 keeps the +30% end of the sweep inside the certificate's r_m,max = 0.3 ([§5.1](architecture/05-reading-the-device.md#51-the-anchor-certificate-design-call)).
+  - Replace with Equal1's line-jump value if it arrives (see the list above).
+- [x] **Dot B's E_c and α vs dot A's** (signed off 2 Nov). Both dots already share the chip scale, so the question is only whether there's an extra shared factor at cell level. §7.1 says "per-dot lever arms" (independent α); E_c is ambiguous. Decision: **independent at cell level by default**, plus a **ρ ∈ {0, 0.5} robustness sweep** (shared cell factor plus per-dot residual).
+  - Independent is conservative for the headline: tuners can't predict dot B from dot A, so any history advantage comes from cells and chips, which is the claim we make.
+  - ρ > 0 is probably closer to the fab (shared oxide, gate stack and strain), but it's unsourced. Setting it high risks building the advantage into the simulator.
+  - Not covered either way: systematic A-vs-B mean differences (dot A sits under QT1/QT2 next to the SEB, dot B under QT2/QA1).
+  - E_c and α of the *same* dot both depend on C_Σ. Sampling them independently can fail the step 4 physicality check, so a high rejection rate points here.
+- [x] **Where the hierarchy multipliers act** (signed off 2 Nov). Decision: the **chip α scale acts on the whole α matrix, and the chip x scale on the ratio x only**:
+  - diagonal: α_i = 0.27 × chip α scale × cell factor_i
+  - off-diagonal: α_i,other gate = x_i × chip x scale × α_i
+  - Why: every gate couples through the same stack, so a "strong" chip pulls harder on both gates. The alternative (α scale on the diagonal only, absolute off-diagonal) quietly makes strong chips have relatively weaker cross-talk, which no source supports.
+  - Consequence: virtual-gate ratios change only with the x scale. Cross-talk learned on one cell transfers to the rest of its chip in proportion to how small the x spread is, so that spread is a history-advantage lever and needs a defensible number.
+  - **Normalise x by row:** x_A = α_A,QA1 / α_A,QT1, relative to the dot's own gate, which is the virtual-gate convention. `checks/anchor_check.py:13` normalises by column instead (`x * a[::-1]`). That's a ~10% difference at ±10% spreads, so past results are fine, but the fleet generator uses row.
+- [x] **Offsets with cross-coupling:** step 5 shifts each dot's line along its own gate with the other gate fixed. Confirmed 2 Nov: this is what σ_cell means (§7.2's source is a single-gate array)
+- [x] **Sensor matrices** (Cds, Cgs, γ) that give ratio 2, 3 and 4 and stay near the peak: closed form in step 6, passes the 2.1 spike at s_A ≤ 0.25 γ. γ itself is still [assumed] (0.2 meV) until Equal1's SEB peak width arrives
+- [x] **QArray's sensor noise is off by default:** `noise_model=None` becomes `BaseNoiseModel()`, which adds zero. Just never pass one
+- [x] The existing `checks/` scripts stay scale-free at T = 0. They are unaffected and don't need porting
 
 ### 2.3 New schedule
 
@@ -190,3 +282,5 @@ Two people, tracks A, B, R, D, E and F ([§15.2](architecture/15-plan.md#152-tra
 
 - [ ] Does the teammate's laptop still have the 25 Oct environment? If so, its `pip freeze` is the quickest way to a lockfile that reproduces §1.2.
 - [ ] What came out of the 27 Oct pitch? Did Equal1 receive the structured data request ([§14](architecture/14-questions-for-equal1.md) Q3–Q5), or answer Q1 and Q2?
+
+add to gitignore the files that are related only to the local 
