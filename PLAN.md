@@ -31,7 +31,7 @@ QArray's Rust core (`qarray-rust-core` 1.3.1) has wheels for Python 3.10–3.12 
 | Install uv | `brew install uv` | already done (otherwise `winget install --id=astral-sh.uv -e`) |
 | Install 3.12 | `uv python install 3.12` | `uv python install 3.12` |
 
-- [ ] Mac: `brew install uv`, then `uv python install 3.12`
+- [x] Mac: `brew install uv`, then `uv python install 3.12` (2 Nov: uv 0.13.6, CPython 3.12.16)
 - [ ] Windows: `uv python install 3.12`
 
 Neither needs a system-wide 3.12: uv downloads its own, and the project pins it.
@@ -67,36 +67,35 @@ Needed by the plan but **missing from that list**:
 - `torch` from PyPI is a CPU build on Windows (2.15.0). That's all the plan needs ([§12](architecture/12-compute-plan.md)), so don't add a CUDA index.
 - The QDarts set resolves to `numpy` 1.26.4, `scipy` 1.12.0, `cvxpy` 1.5.2, all with `cp312-win_amd64` wheels.
 
-- [ ] Write `pyproject.toml` with the main dependencies, `pytest` as a dev dependency and `botorch` as an optional extra (`uv init --package --python 3.12`, then `uv add …`). No OS-specific markers or indexes.
-- [ ] `uv lock` and commit `uv.lock`. The lock is universal, so one lockfile serves both OSes. Lock on either machine, then `uv sync` on the other and confirm it installs without re-locking.
-- [ ] Add `.gitattributes` with `* text=auto eol=lf`, so `uv.lock`, `.py` and `.md` files don't churn line endings between Mac and Windows
+- [x] Write `pyproject.toml` with the main dependencies, `pytest` as a dev dependency and `botorch` as an optional extra (`uv init --package --python 3.12`, then `uv add …`). No OS-specific markers or indexes. Done with `requires-python = ">=3.12,<3.13"`, a flat `spintune/` layout, and extras `bo` (botorch) and `data` (h5py).
+- [x] `uv lock` and commit `uv.lock`. The lock is universal, so one lockfile serves both OSes. Locked on the Mac (2 Nov, 128 packages; numpy 2.2.4, jax 0.12.0.1, torch 2.15.0, as in the Windows check above).
+- [ ] Windows: `uv sync --locked --all-extras` and confirm it installs without re-locking
+- [x] Add `.gitattributes` with `* text=auto eol=lf`, so `uv.lock`, `.py` and `.md` files don't churn line endings between Mac and Windows
 - [ ] If the teammate's laptop still has the 25 Oct environment, diff its `pip freeze` against the lockfile first, so the lock matches the environment that produced the §1.2 numbers
 
 ### 1.3 Reproduce the `checks/` numbers (A0's Done check)
 
 A0 is done when every `checks/` script reruns from the repo on **both laptops (Mac and Windows)**, with outputs saved. That shows the new environment matches the one behind the design's numbers.
 
-- [ ] Run each script from `checks/` (some `exec` a sibling file by relative path) and save the output to `checks/outputs/<script>.txt`. The commands are the same on both OSes:
-  - `uv run python headroom_v4.py anchor_check.py` (~30 s on 14 cores)
-  - `uv run python cz_v3_scan.py .`
+- [x] Run each script from `checks/` (some `exec` a sibling file by relative path) and save the output. One command on both OSes, from the repo root: `uv run python checks/run_checks.py` (~5 min on the Mac). It runs every script with its arguments from `checks/README.md`, plus the three `headroom_v4.py` flag runs behind §1.2, and writes `checks/outputs/<os>/<script>.txt` and `machine.txt` (machine, per-script wall time).
   - `qdarts_check.py` runs in the QDarts environment instead ([Phase 3](#phase-3-needed-soon-but-not-on-day-one))
-- [ ] Windows: save outputs as UTF-8, or they won't diff cleanly against the Mac's. In PowerShell, use `uv run python headroom_v4.py anchor_check.py | Out-File -Encoding utf8 outputs\headroom_v4.txt`, or run the commands from Git Bash with `>`. Set `$env:PYTHONUTF8=1` first. Quote the repo path, because it has a space (`D:\QML JEV\…`).
-- [ ] Compare against [§1.2](architecture/01-design-decisions-and-evidence.md#12-evidence-status-25-oct-2026):
+- [x] Windows: outputs must be UTF-8, or they won't diff cleanly against the Mac's. `run_checks.py` writes UTF-8 with LF itself and sets `PYTHONUTF8=1` for each script, so no `Out-File` or shell redirection is needed. Quote the repo path, because it has a space (`D:\QML JEV\…`).
+- [x] Compare against [§1.2](architecture/01-design-decisions-and-evidence.md#12-evidence-status-25-oct-2026). Mac, 2 Nov: every count, tally and ratio matches; only timings differ (see `checks/outputs/mac/`):
 
 | Script | Expected |
 |---|---|
 | `headroom_v4.py`, in-distribution | T★ 357 px / 5.0 queries / 0.33 s; T3 527 / 8.3 / 0.50 s; T3-M 528 px / 0.50 s; chip history 451 / 5.8 / 0.36 s |
 | `anchor_check.py` | Fixed 22.5 mV rule: 24/300 and 45/300 wrong; period-bounded rule: 0/300 at each spread |
-| `qarray_timing.py` | 2 dots: ~97 ms per 100×100, ~9.9 ms per 32×32 (machine-dependent) |
+| `qarray_timing.py` | 2 dots: ~97 ms per 100×100, ~9.9 ms per 32×32 (machine-dependent). Mac (M4 Pro): 51 / 6.3 ms |
 
-- [ ] Same run on the second laptop. Counts and wrong-anchor tallies should match exactly across OSes. Timings will differ (the Windows machine has 24 threads; the 30 s figure is from 14 cores), so record the machine next to each timing.
+- [ ] Same run on the second laptop (Windows), then commit `checks/outputs/windows/` and diff it against `checks/outputs/mac/`. Counts and wrong-anchor tallies should match exactly across OSes. Timings will differ (the Windows machine has 24 threads; the 30 s figure is from 14 cores), so record the machine next to each timing.
 
 ### 1.4 Package skeleton and ignore rules
 
-- [ ] Create `spintune/` per [Appendix A](architecture/appendix-a-interfaces-and-code-layout.md) (empty modules: `fleet.py`, `device.py`, `interface.py`, `evaluator.py`, `anchor.py`, `reader.py`, `prior.py`, `harness.py`, `tuners/`, `qiskit_cz/`) and `tests/`
-- [ ] Add the generated-output folders and a data folder to `.gitignore`: `fleets/ runs/ logs/ priors/ figs/ data/` (none are listed today)
-- [ ] `uv run pytest` passes on the empty suite, on both OSes
-- [ ] Commit
+- [x] Create `spintune/` per [Appendix A](architecture/appendix-a-interfaces-and-code-layout.md) (empty modules: `fleet.py`, `device.py`, `interface.py`, `evaluator.py`, `anchor.py`, `reader.py`, `prior.py`, `harness.py`, `tuners/`, `qiskit_cz/`) and `tests/`
+- [x] Add the generated-output folders and a data folder to `.gitignore`: `fleets/ runs/ logs/ priors/ figs/ data/` (none are listed today). Anchored at the repo root.
+- [ ] `uv run pytest` passes on both OSes. An empty suite makes pytest exit 5, so `tests/test_skeleton.py` imports each Appendix A module. Mac: 10 passed.
+- [x] Commit
 
 **Rules for `spintune/` code so it runs on both OSes:**
 

@@ -1,0 +1,4 @@
+2 dots, 100x100, T=300 mK, noise+latching:    51.8 ms/CSD  (z (100, 100, 1), n (100, 100, 2))
+2 dots, 32x32, T=300 mK, noise+latching:    11.7 ms/CSD  (z (32, 32, 1), n (32, 32, 2))
+4 dots, 100x100, T=300 mK, noise+latching:    61.8 ms/CSD  (z (100, 100, 1), n (100, 100, 4))
+4 dots, 32x32, T=300 mK, noise+latching:     7.5 ms/CSD  (z (32, 32, 1), n (32, 32, 4))

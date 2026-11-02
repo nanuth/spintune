@@ -1,0 +1,4 @@
+P = 15 mV (sigma_cell = 1.47 P, sigma_die = 4.93 P), 400 cells:
+   fleet-mean start 1% | earlier-cells mean (k>=2) 6% | all-other-cells upper bound 6%
+P = 25 mV (sigma_cell = 0.88 P, sigma_die = 2.96 P), 400 cells:
+   fleet-mean start 6% | earlier-cells mean (k>=2) 12% | all-other-cells upper bound 19%

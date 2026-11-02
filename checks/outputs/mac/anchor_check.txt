@@ -1,0 +1,9 @@
+v2 rule, start spread 22 mV: declared-empty point not empty in 24/300 cells (P of failures: 30-39 mV)
+v2 rule, start spread 77 mV: declared-empty point not empty in 45/300 cells (P of failures: 25-40 mV)
+v3 rule, start spread 22 mV: declared-empty point not empty in 0/300 cells
+v3 rule, start spread 77 mV: declared-empty point not empty in 0/300 cells
+v3 descent ray length, start spread 22 mV: median 171 mV, p90 255 mV (= 85 / 128 px at 2 mV pitch)
+v3 descent ray length, start spread 77 mV: median 198 mV, p90 385 mV (= 99 / 192 px at 2 mV pitch)
+domain [-300, +300] mV: certificate fits for 99.70% of cells
+domain [-350, +300] mV: certificate fits for 99.93% of cells
+domain [-400, +300] mV: certificate fits for 99.95% of cells

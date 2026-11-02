@@ -1,0 +1,7 @@
+start spread  0 mV: descent+certificate px mean    87 median    87 p90   104 | total mean   389
+start spread 22 mV: descent+certificate px mean    94 median    90 p90   130 | total mean   396
+start spread 31 mV: descent+certificate px mean    96 median    89 p90   140 | total mean   398
+start spread 77 mV: descent+certificate px mean   125 median   105 p90   212 | total mean   467
+headroom of spread-22 start over oracle start (means): 2%
+headroom of spread-31 start over oracle start (means): 2%
+headroom of spread-77 start over oracle start (means): 17%
