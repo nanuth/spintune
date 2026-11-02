@@ -1,0 +1,40 @@
+[project]
+name = "spintune"
+version = "0.1.0"
+description = "Benchmark and reference tuner for charge tuning of CMOS spin-qubit cells"
+readme = "README.md"
+# QArray's Rust core (qarray-rust-core 1.3.1) has wheels for Python 3.10-3.12 only.
+requires-python = ">=3.12,<3.13"
+dependencies = [
+    "matplotlib>=3.11.2",
+    "qarray==1.6.0",
+    "qiskit==2.6.1",
+    "qiskit-aer==0.18.0",
+    "qiskit-experiments==0.14.2",
+    "qiskit-ibm-runtime>=0.51.0",
+    "samplomatic==0.21.0",
+    "scikit-image>=0.26.0",
+    "scipy>=1.18.1",
+    "torch>=2.15.0",
+]
+
+[project.optional-dependencies]
+bo = [
+    "botorch>=0.18.1",
+]
+data = [
+    "h5py>=3.16.0",
+]
+
+[build-system]
+requires = ["uv_build>=0.13.6,<0.14.0"]
+build-backend = "uv_build"
+
+[tool.uv.build-backend]
+# Flat layout: spintune/ sits at the repo root (architecture/appendix-a).
+module-root = ""
+
+[dependency-groups]
+dev = [
+    "pytest>=9.2.0",
+]
