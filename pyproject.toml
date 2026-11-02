@@ -38,3 +38,8 @@ module-root = ""
 dev = [
     "pytest>=9.2.0",
 ]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+# qarray depends on dash, whose pytest plugin emits a deprecation warning on every run.
+addopts = "-p no:dash"
