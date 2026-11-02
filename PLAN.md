@@ -19,12 +19,22 @@
 
 ## Phase 1: Blocking prerequisites (A0). Nothing runs without these
 
-### 1.1 Python 3.12 on this Mac
+### 1.1 Python 3.12 on both laptops (Mac and Windows)
 
-This machine has only Python 3.14.2 (Homebrew) and 3.9.6 (system). It has no uv, conda or pyenv, and neither `qarray` nor `qiskit` is installed. QArray's Rust core has no wheel for Python 3.13 or later, so 3.14 can't be used. The environment [§13](architecture/13-prerequisites.md) marks "verified 25 Oct" is not on this machine.
+QArray's Rust core (`qarray-rust-core` 1.3.1) has wheels for Python 3.10–3.12 only, on every OS, so both machines need 3.12. The environment [§13](architecture/13-prerequisites.md) marks "verified 25 Oct" is on neither.
 
-- [ ] `brew install uv`
-- [ ] `uv python install 3.12`
+| | Mac | Windows (checked 2 Nov) |
+|---|---|---|
+| Python today | 3.14.2 (Homebrew), 3.9.6 (system) | 3.11.9 only |
+| uv | none | 0.11.9, in `%USERPROFILE%\.local\bin` |
+| Other | no conda or pyenv; no `qarray` or `qiskit` | Git 2.52, long paths on; 24 threads, 31 GB RAM |
+| Install uv | `brew install uv` | already done (otherwise `winget install --id=astral-sh.uv -e`) |
+| Install 3.12 | `uv python install 3.12` | `uv python install 3.12` |
+
+- [ ] Mac: `brew install uv`, then `uv python install 3.12`
+- [ ] Windows: `uv python install 3.12`
+
+Neither needs a system-wide 3.12: uv downloads its own, and the project pins it.
 
 ### 1.2 `pyproject.toml` and `uv.lock` for the `spintune` package
 
@@ -51,18 +61,26 @@ Needed by the plan but **missing from that list**:
 | `scikit-image` | Hough line fitting for reader v1 (R1) and T2's fitter |
 | `h5py` (optional extra) | Raw D-CSD files (R3, later) |
 
-- [ ] Write `pyproject.toml` with the main dependencies, `pytest` as a dev dependency and `botorch` as an optional extra (`uv init --package --python 3.12`, then `uv add …`)
-- [ ] `uv lock` and commit `uv.lock`
+**Windows check (2 Nov):** the full list above, plus the QDarts pins, resolves for Python 3.12 on `win_amd64` (`uv pip compile --python-platform x86_64-pc-windows-msvc`, nothing installed). Every package has a Windows wheel or is pure Python. Things to know:
+
+- `qarray==1.6.0` pins `numpy==2.2.4` exactly and pulls in `jax[cpu]` (0.12.0.1, which has Windows wheels). Numpy is fixed by QArray on both OSes.
+- `torch` from PyPI is a CPU build on Windows (2.15.0). That's all the plan needs ([§12](architecture/12-compute-plan.md)), so don't add a CUDA index.
+- The QDarts set resolves to `numpy` 1.26.4, `scipy` 1.12.0, `cvxpy` 1.5.2, all with `cp312-win_amd64` wheels.
+
+- [ ] Write `pyproject.toml` with the main dependencies, `pytest` as a dev dependency and `botorch` as an optional extra (`uv init --package --python 3.12`, then `uv add …`). No OS-specific markers or indexes.
+- [ ] `uv lock` and commit `uv.lock`. The lock is universal, so one lockfile serves both OSes. Lock on either machine, then `uv sync` on the other and confirm it installs without re-locking.
+- [ ] Add `.gitattributes` with `* text=auto eol=lf`, so `uv.lock`, `.py` and `.md` files don't churn line endings between Mac and Windows
 - [ ] If the teammate's laptop still has the 25 Oct environment, diff its `pip freeze` against the lockfile first, so the lock matches the environment that produced the §1.2 numbers
 
 ### 1.3 Reproduce the `checks/` numbers (A0's Done check)
 
-A0 is done when every `checks/` script reruns from the repo on **both laptops**, with outputs saved. That shows the new environment matches the one behind the design's numbers.
+A0 is done when every `checks/` script reruns from the repo on **both laptops (Mac and Windows)**, with outputs saved. That shows the new environment matches the one behind the design's numbers.
 
-- [ ] Run each script from `checks/` (some `exec` a sibling file by relative path) and save the output to `checks/outputs/<script>.txt`
+- [ ] Run each script from `checks/` (some `exec` a sibling file by relative path) and save the output to `checks/outputs/<script>.txt`. The commands are the same on both OSes:
   - `uv run python headroom_v4.py anchor_check.py` (~30 s on 14 cores)
   - `uv run python cz_v3_scan.py .`
   - `qdarts_check.py` runs in the QDarts environment instead ([Phase 3](#phase-3-needed-soon-but-not-on-day-one))
+- [ ] Windows: save outputs as UTF-8, or they won't diff cleanly against the Mac's. In PowerShell, use `uv run python headroom_v4.py anchor_check.py | Out-File -Encoding utf8 outputs\headroom_v4.txt`, or run the commands from Git Bash with `>`. Set `$env:PYTHONUTF8=1` first. Quote the repo path, because it has a space (`D:\QML JEV\…`).
 - [ ] Compare against [§1.2](architecture/01-design-decisions-and-evidence.md#12-evidence-status-25-oct-2026):
 
 | Script | Expected |
@@ -71,14 +89,21 @@ A0 is done when every `checks/` script reruns from the repo on **both laptops**,
 | `anchor_check.py` | Fixed 22.5 mV rule: 24/300 and 45/300 wrong; period-bounded rule: 0/300 at each spread |
 | `qarray_timing.py` | 2 dots: ~97 ms per 100×100, ~9.9 ms per 32×32 (machine-dependent) |
 
-- [ ] Same run on the second laptop
+- [ ] Same run on the second laptop. Counts and wrong-anchor tallies should match exactly across OSes. Timings will differ (the Windows machine has 24 threads; the 30 s figure is from 14 cores), so record the machine next to each timing.
 
 ### 1.4 Package skeleton and ignore rules
 
 - [ ] Create `spintune/` per [Appendix A](architecture/appendix-a-interfaces-and-code-layout.md) (empty modules: `fleet.py`, `device.py`, `interface.py`, `evaluator.py`, `anchor.py`, `reader.py`, `prior.py`, `harness.py`, `tuners/`, `qiskit_cz/`) and `tests/`
 - [ ] Add the generated-output folders and a data folder to `.gitignore`: `fleets/ runs/ logs/ priors/ figs/ data/` (none are listed today)
-- [ ] `uv run pytest` passes on the empty suite
+- [ ] `uv run pytest` passes on the empty suite, on both OSes
 - [ ] Commit
+
+**Rules for `spintune/` code so it runs on both OSes:**
+
+- Windows starts worker processes by `spawn`, not `fork`. The harness's parallel runs ([§12](architecture/12-compute-plan.md)) need an `if __name__ == "__main__":` guard and picklable worker functions. Keep workers long-lived, because each spawn re-imports jax, torch and qiskit.
+- Pin threads per worker in code (`os.environ["OMP_NUM_THREADS"] = "1"`, and the same for `MKL_`, `OPENBLAS_` and `RAYON_NUM_THREADS`) before numpy, jax or torch is imported, not in the shell. Bash and PowerShell set environment variables differently.
+- `open(..., encoding="utf-8")` for every text file (traces, logs, priors). Windows defaults to cp1252.
+- `pathlib.Path` for every path; no hard-coded `/`.
 
 ---
 
