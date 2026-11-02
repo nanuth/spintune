@@ -43,6 +43,10 @@ SCRIPTS = {
 }
 SKIPPED = {"qdarts_check.py": "needs the QDarts environment (PLAN.md Phase 3)"}
 
+# Extra environment per script. §1.2's QArray timings are single-threaded; unpinned,
+# QArray's Rust core uses every core and the timing varies run to run.
+ENV = {"qarray_timing.py": {"RAYON_NUM_THREADS": "1"}}
+
 
 def os_name() -> str:
     return {"Darwin": "mac", "Windows": "windows"}.get(platform.system(), platform.system().lower())
@@ -74,10 +78,11 @@ def main(names: list[str]) -> int:
     rows, failed = [], []
     for key in names or SCRIPTS:
         script, args = key.split()[0], SCRIPTS[key]
-        cmd = " ".join([script, *args])
+        extra = ENV.get(key, {})
+        cmd = " ".join([*(f"{k}={v}" for k, v in extra.items()), script, *args])
         print(f"{cmd} ...", end=" ", flush=True)
         t0 = time.perf_counter()
-        r = subprocess.run([sys.executable, script, *args], cwd=HERE, env=env,
+        r = subprocess.run([sys.executable, script, *args], cwd=HERE, env={**env, **extra},
                            capture_output=True, text=True, encoding="utf-8", errors="replace")
         dt = time.perf_counter() - t0
         text = r.stdout + (f"\n--- stderr ---\n{r.stderr}" if r.stderr.strip() else "")

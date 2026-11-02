@@ -8,7 +8,7 @@ These are the scripts behind every **[measured]** claim in `SpinTune_Design_v4.m
 - The main environment is locked in the repo root's `pyproject.toml` and `uv.lock`: `uv sync --all-extras` (BoTorch is the `bo` extra). The QDarts environment has no lockfile yet.
 
 ## Rerunning everything
-`uv run python checks/run_checks.py` from the repo root runs every script below (except `qdarts_check.py`) with its documented arguments, plus the three `headroom_v4.py` flag runs, and writes UTF-8 outputs to `checks/outputs/<os>/` with the machine and wall times in `machine.txt`. Same command on Mac and Windows.
+`uv run python checks/run_checks.py` from the repo root runs every script below (except `qdarts_check.py`) with its documented arguments, plus the three `headroom_v4.py` flag runs, and writes UTF-8 outputs to `checks/outputs/<os>/` with the machine and wall times in `machine.txt`. It is meant to be the same command on Mac and Windows; so far it has run on the Mac only. `qarray_timing.py` runs single-threaded (`RAYON_NUM_THREADS=1`), as in §1.2.
 
 ## Scripts
 

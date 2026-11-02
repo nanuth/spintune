@@ -28,11 +28,11 @@ QArray's Rust core (`qarray-rust-core` 1.3.1) has wheels for Python 3.10–3.12 
 | Python today | 3.14.2 (Homebrew), 3.9.6 (system) | 3.11.9 only |
 | uv | none | 0.11.9, in `%USERPROFILE%\.local\bin` |
 | Other | no conda or pyenv; no `qarray` or `qiskit` | Git 2.52, long paths on; 24 threads, 31 GB RAM |
-| Install uv | `brew install uv` | already done (otherwise `winget install --id=astral-sh.uv -e`) |
+| Install uv | `brew install uv` | installed, but 0.11.9 is too old for the lock: `uv self update` (otherwise `winget install --id=astral-sh.uv -e`) |
 | Install 3.12 | `uv python install 3.12` | `uv python install 3.12` |
 
 - [x] Mac: `brew install uv`, then `uv python install 3.12` (2 Nov: uv 0.13.6, CPython 3.12.16)
-- [ ] Windows: `uv python install 3.12`
+- [ ] Windows: `uv self update`, then `uv python install 3.12`. `pyproject.toml` requires uv ≥ 0.13.6, because `uv.lock` is lock revision 5. Never re-lock with an older uv.
 
 Neither needs a system-wide 3.12: uv downloads its own, and the project pins it.
 
@@ -79,14 +79,15 @@ A0 is done when every `checks/` script reruns from the repo on **both laptops (M
 
 - [x] Run each script from `checks/` (some `exec` a sibling file by relative path) and save the output. One command on both OSes, from the repo root: `uv run python checks/run_checks.py` (~5 min on the Mac). It runs every script with its arguments from `checks/README.md`, plus the three `headroom_v4.py` flag runs behind §1.2, and writes `checks/outputs/<os>/<script>.txt` and `machine.txt` (machine, per-script wall time).
   - `qdarts_check.py` runs in the QDarts environment instead ([Phase 3](#phase-3-needed-soon-but-not-on-day-one))
-- [x] Windows: outputs must be UTF-8, or they won't diff cleanly against the Mac's. `run_checks.py` writes UTF-8 with LF itself and sets `PYTHONUTF8=1` for each script, so no `Out-File` or shell redirection is needed. Quote the repo path, because it has a space (`D:\QML JEV\…`).
+  - Outputs must be UTF-8, or Windows's won't diff cleanly against the Mac's. `run_checks.py` writes UTF-8 with LF itself and sets `PYTHONUTF8=1` for each script, so no `Out-File` or shell redirection is needed. Not yet run on Windows. Quote the repo path there, because it has a space (`D:\QML JEV\…`).
+  - `qarray_timing.py` runs with `RAYON_NUM_THREADS=1`, because §1.2's timings are single-threaded. Unpinned, QArray uses every core and its timing varies from run to run.
 - [x] Compare against [§1.2](architecture/01-design-decisions-and-evidence.md#12-evidence-status-25-oct-2026). Mac, 2 Nov: every count, tally and ratio matches; only timings differ (see `checks/outputs/mac/`):
 
 | Script | Expected |
 |---|---|
 | `headroom_v4.py`, in-distribution | T★ 357 px / 5.0 queries / 0.33 s; T3 527 / 8.3 / 0.50 s; T3-M 528 px / 0.50 s; chip history 451 / 5.8 / 0.36 s |
 | `anchor_check.py` | Fixed 22.5 mV rule: 24/300 and 45/300 wrong; period-bounded rule: 0/300 at each spread |
-| `qarray_timing.py` | 2 dots: ~97 ms per 100×100, ~9.9 ms per 32×32 (machine-dependent). Mac (M4 Pro): 51 / 6.3 ms |
+| `qarray_timing.py` | 2 dots: ~97 ms per 100×100, ~9.9 ms per 32×32 (machine-dependent). Mac (M4 Pro), one thread: 85.9 / 9.4 ms; 4 dots 117 / 12.7 ms (§1.2: 116 / 12.4) |
 
 - [ ] Same run on the second laptop (Windows), then commit `checks/outputs/windows/` and diff it against `checks/outputs/mac/`. Counts and wrong-anchor tallies should match exactly across OSes. Timings will differ (the Windows machine has 24 threads; the 30 s figure is from 14 cores), so record the machine next to each timing.
 

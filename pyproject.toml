@@ -43,3 +43,7 @@ dev = [
 testpaths = ["tests"]
 # qarray depends on dash, whose pytest plugin emits a deprecation warning on every run.
 addopts = "-p no:dash"
+
+[tool.uv]
+# uv.lock is revision 5, written by uv 0.13.6; an older uv may reject it or re-lock.
+required-version = ">=0.13.6"
