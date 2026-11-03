@@ -1,0 +1,11 @@
+{"J_MHz": 5.0, "dEz_MHz": 63.0, "fractional_J_error": 0, "full_H_infidelity": 1.440305652522511e-10, "pure_ZZ_infidelity": 0.0, "relative_difference": null}
+{"J_MHz": 5.0, "dEz_MHz": 63.0, "fractional_J_error": 0.01, "full_H_infidelity": 4.943543695201669e-05, "pure_ZZ_infidelity": 4.9347007335760546e-05, "relative_difference": 0.0017919955237499785}
+{"J_MHz": 5.0, "dEz_MHz": 63.0, "fractional_J_error": 0.05, "full_H_infidelity": 0.0012353589547459132, "pure_ZZ_infidelity": 0.0012330665067488097, "relative_difference": 0.001859143837381394}
+{"J_MHz": 20.0, "dEz_MHz": 63.0, "fractional_J_error": 0, "full_H_infidelity": 1.2457679877675432e-06, "pure_ZZ_infidelity": 0.0, "relative_difference": null}
+{"J_MHz": 20.0, "dEz_MHz": 63.0, "fractional_J_error": 0.01, "full_H_infidelity": 5.203078021742691e-05, "pure_ZZ_infidelity": 4.9347007335760546e-05, "relative_difference": 0.05438572725202517}
+{"J_MHz": 20.0, "dEz_MHz": 63.0, "fractional_J_error": 0.05, "full_H_infidelity": 0.0012710437553213882, "pure_ZZ_infidelity": 0.0012330665067488097, "relative_difference": 0.030799026950064645}
+{"J_MHz": 100.0, "dEz_MHz": 300.0, "fractional_J_error": 0, "full_H_infidelity": 2.1964910557059625e-08, "pure_ZZ_infidelity": 0.0, "relative_difference": null}
+{"J_MHz": 100.0, "dEz_MHz": 300.0, "fractional_J_error": 0.01, "full_H_infidelity": 5.092487820967939e-05, "pure_ZZ_infidelity": 4.9347007335760546e-05, "relative_difference": 0.03197500637035389}
+{"J_MHz": 100.0, "dEz_MHz": 300.0, "fractional_J_error": 0.05, "full_H_infidelity": 0.0012734273243667493, "pure_ZZ_infidelity": 0.0012330665067488097, "relative_difference": 0.03273206870597578}
+{"prior_period_mV": 15, "actual_period_mV": 40, "start_mV": 70, "claimed_empty_mV": 47.5, "true_electrons_at_claimed_empty": 2}
+The Hamiltonian has odd-state Zeeman eigenvalues +/- dEz and a splitting of 2*dEz.

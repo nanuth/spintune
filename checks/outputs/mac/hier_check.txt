@@ -1,0 +1,3 @@
+400 devices (40 dies x 10 cells), sigma_die=3.0, sigma_cell=0.9 periods
+  zero-measurement, fleet-mean start      : 5%
+  zero-measurement, same-die mean start   : 12%

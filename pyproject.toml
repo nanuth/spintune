@@ -3,6 +3,7 @@ name = "spintune"
 version = "0.1.0"
 description = "SpinTune: metered auto-tuning of spin-qubit double dots"
 readme = "README.md"
+# QArray's Rust core (qarray-rust-core 1.3.1) has wheels for Python 3.10-3.12 only.
 requires-python = "==3.12.*"
 dependencies = [
     "matplotlib>=3.11.2",
@@ -31,8 +32,15 @@ dev = [
 ]
 
 [build-system]
-requires = ["uv_build>=0.11.9,<0.12"]
+# Windows has uv 0.11.9, the Mac 0.13.6; this range lets both use their built-in backend.
+requires = ["uv_build>=0.11.9,<0.14"]
 build-backend = "uv_build"
 
 [tool.uv.build-backend]
+# Flat layout: spintune/ sits at the repo root (architecture/appendix-a).
 module-root = ""
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+# qarray depends on dash, whose pytest plugin emits a deprecation warning on every run.
+addopts = "-p no:dash"

@@ -5,7 +5,10 @@ These are the scripts behind every **[measured]** claim in `SpinTune_Design_v4.m
 ## Environments
 - **Main:** Python 3.12 with `qarray==1.6.0`, `qiskit==2.6.1`, `qiskit-aer==0.18.0`, `qiskit-experiments==0.14.2`, `torch` and `botorch` (BoTorch is used only by `bo_overhead.py`). QArray's Rust core has no wheel for Python ≥ 3.13.
 - **QDarts:** a separate Python 3.12 environment with `qdarts==1.0.5`. It pins `numpy<2`, `scipy<=1.12` and `cvxpy==1.5.2`.
-- Lockfiles are still to do (design §15.1).
+- The main environment is locked in the repo root's `pyproject.toml` and `uv.lock`: `uv sync --all-extras` (BoTorch is the `bo` extra). The QDarts environment has no lockfile yet.
+
+## Rerunning everything
+`uv run python checks/run_checks.py` from the repo root runs every script below (except `qdarts_check.py`) with its documented arguments, plus the three `headroom_v4.py` flag runs, and writes UTF-8 outputs to `checks/outputs/<os>/` with the machine and wall times in `machine.txt`. It is meant to be the same command on Mac and Windows; so far it has run on the Mac only. `qarray_timing.py` runs single-threaded (`RAYON_NUM_THREADS=1`), as in §1.2.
 
 ## Scripts
 

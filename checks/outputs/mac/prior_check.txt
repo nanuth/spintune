@@ -1,0 +1,11 @@
+(A) cell areas (V^2) for one device:
+    (1, 1): area=0.9258  pixels=3023
+    (2, 2): area=0.9221  pixels=3011
+    (3, 3): area=0.9258  pixels=3023
+    (1, 2): area=0.9233  pixels=3015
+    (2, 1): area=0.9258  pixels=3023
+(B) offsets=none: (1,1) cell width ~1.03 V; centre SD = 0.10 / 0.10 cell widths; 95% span = 0.38 x 0.35 cell widths
+(B) offsets=uniform 1 period: (1,1) cell width ~1.03 V; centre SD = 0.34 / 0.33 cell widths; 95% span = 1.22 x 1.23 cell widths
+(C) zero-measurement 'fleet mean' tuner, success = lands in true (1,1):
+    offsets=none: 100% of devices
+    offsets=uniform 1 period: 82% of devices
