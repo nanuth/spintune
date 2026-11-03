@@ -4,7 +4,7 @@
 
 ## Where things stand
 
-- The repo holds the v5 design, its reviews and the `checks/` feasibility scripts. There is no `spintune/` package, `pyproject.toml` or test suite yet.
+- The repo holds the v5 design, its reviews and the `checks/` feasibility scripts. Phase 1 has added the `spintune/` skeleton, `pyproject.toml`, `uv.lock` and `tests/` (3 Nov); the Windows rerun of `checks/` is partial.
 - [§15.4](architecture/15-plan.md#154-schedule) planned W1 (28 Oct – 3 Nov) to end with the first sensor-only, metered end-to-end comparison (A0–A3, B1, R1 minimal, B2). None of it has started, so we are about **one week behind**, with 25 days to the final.
 - **Fixed dates ahead:**
 
@@ -28,11 +28,11 @@ QArray's Rust core (`qarray-rust-core` 1.3.1) has wheels for Python 3.10–3.12 
 | Python today | 3.14.2 (Homebrew), 3.9.6 (system) | 3.11.9 only |
 | uv | none | 0.11.9, in `%USERPROFILE%\.local\bin` |
 | Other | no conda or pyenv; no `qarray` or `qiskit` | Git 2.52, long paths on; 24 threads, 31 GB RAM |
-| Install uv | `brew install uv` | installed, but 0.11.9 is too old for the lock: `uv self update` (otherwise `winget install --id=astral-sh.uv -e`) |
+| Install uv | `brew install uv` | already done (otherwise `winget install --id=astral-sh.uv -e`). 0.11.9 works with the lock: checked 3 Nov |
 | Install 3.12 | `uv python install 3.12` | `uv python install 3.12` |
 
 - [x] Mac: `brew install uv`, then `uv python install 3.12` (2 Nov: uv 0.13.6, CPython 3.12.16)
-- [ ] Windows: `uv self update`, then `uv python install 3.12`. `pyproject.toml` requires uv ≥ 0.13.6, because `uv.lock` is lock revision 5. Never re-lock with an older uv.
+- [x] Windows: `uv python install 3.12` (2 Nov: CPython 3.12.13, see `checks/outputs/windows/MACHINES.md`)
 
 Neither needs a system-wide 3.12: uv downloads its own, and the project pins it.
 
@@ -67,9 +67,9 @@ Needed by the plan but **missing from that list**:
 - `torch` from PyPI is a CPU build on Windows (2.15.0). That's all the plan needs ([§12](architecture/12-compute-plan.md)), so don't add a CUDA index.
 - The QDarts set resolves to `numpy` 1.26.4, `scipy` 1.12.0, `cvxpy` 1.5.2, all with `cp312-win_amd64` wheels.
 
-- [x] Write `pyproject.toml` with the main dependencies, `pytest` as a dev dependency and `botorch` as an optional extra (`uv init --package --python 3.12`, then `uv add …`). No OS-specific markers or indexes. Done with `requires-python = ">=3.12,<3.13"`, a flat `spintune/` layout, and extras `bo` (botorch) and `data` (h5py).
-- [x] `uv lock` and commit `uv.lock`. The lock is universal, so one lockfile serves both OSes. Locked on the Mac (2 Nov, 128 packages; numpy 2.2.4, jax 0.12.0.1, torch 2.15.0, as in the Windows check above).
-- [ ] Windows: `uv sync --locked --all-extras` and confirm it installs without re-locking
+- [x] Write `pyproject.toml` with the main dependencies, `pytest` as a dev dependency and `botorch` as an optional extra (`uv init --package --python 3.12`, then `uv add …`). No OS-specific markers or indexes. Done with `requires-python = "==3.12.*"`, a flat `spintune/` layout, and extras `bo` (botorch) and `raw` (h5py).
+- [x] `uv lock` and commit `uv.lock`. The lock is universal, so one lockfile serves both OSes. Locked on Windows (2 Nov, uv 0.11.9, lock revision 3; 128 packages; numpy 2.2.4, jax 0.12.0.1, torch 2.15.0). A parallel Mac lock (uv 0.13.6, revision 5) resolved the same 128 versions; main keeps the Windows one. uv 0.11.9 and 0.13.6 both check, sync and re-lock either revision without rewriting it (3 Nov).
+- [x] Sync on the other machine without re-locking: the Mac ran `uv sync --locked --all-extras` on the Windows lock (3 Nov); `uv.lock` unchanged
 - [x] Add `.gitattributes` with `* text=auto eol=lf`, so `uv.lock`, `.py` and `.md` files don't churn line endings between Mac and Windows
 - [ ] If the teammate's laptop still has the 25 Oct environment, diff its `pip freeze` against the lockfile first, so the lock matches the environment that produced the §1.2 numbers
 
@@ -87,15 +87,15 @@ A0 is done when every `checks/` script reruns from the repo on **both laptops (M
 |---|---|
 | `headroom_v4.py`, in-distribution | T★ 357 px / 5.0 queries / 0.33 s; T3 527 / 8.3 / 0.50 s; T3-M 528 px / 0.50 s; chip history 451 / 5.8 / 0.36 s |
 | `anchor_check.py` | Fixed 22.5 mV rule: 24/300 and 45/300 wrong; period-bounded rule: 0/300 at each spread |
-| `qarray_timing.py` | 2 dots: ~97 ms per 100×100, ~9.9 ms per 32×32 (machine-dependent). Mac (M4 Pro), one thread: 85.9 / 9.4 ms; 4 dots 117 / 12.7 ms (§1.2: 116 / 12.4) |
+| `qarray_timing.py` | 2 dots: ~97 ms per 100×100, ~9.9 ms per 32×32 (machine-dependent). Mac (M4 Pro), one thread, over 4 runs: 84–99 / 9.0–11.1 ms; saved run in `checks/outputs/mac/qarray_timing.txt` |
 
-- [ ] Same run on the second laptop (Windows), then commit `checks/outputs/windows/` and diff it against `checks/outputs/mac/`. Counts and wrong-anchor tallies should match exactly across OSes. Timings will differ (the Windows machine has 24 threads; the 30 s figure is from 14 cores), so record the machine next to each timing.
+- [ ] Full run on Windows with `uv run python checks/run_checks.py`; it rewrites `checks/outputs/windows/`, replacing the hand-run files and `MACHINES.md`. Commit it and diff against `checks/outputs/mac/`. **Partial so far** (1d90046, 4 scripts by hand): `headroom_v4` and `anchor_check` are byte-identical to the Mac; `cz_v3_scan` differs in one entry at 2×10⁻¹³ (round-off). The Windows `qarray_timing` (59.5 ms) was unpinned, so it isn't comparable with §1.2 until the runner reruns it single-threaded. Counts and wrong-anchor tallies should match exactly across OSes. Timings will differ (the Windows machine has 24 threads; the 30 s figure is from 14 cores), so record the machine next to each timing.
 
 ### 1.4 Package skeleton and ignore rules
 
 - [x] Create `spintune/` per [Appendix A](architecture/appendix-a-interfaces-and-code-layout.md) (empty modules: `fleet.py`, `device.py`, `interface.py`, `evaluator.py`, `anchor.py`, `reader.py`, `prior.py`, `harness.py`, `tuners/`, `qiskit_cz/`) and `tests/`
 - [x] Add the generated-output folders and a data folder to `.gitignore`: `fleets/ runs/ logs/ priors/ figs/ data/` (none are listed today). Anchored at the repo root.
-- [ ] `uv run pytest` passes on both OSes. An empty suite makes pytest exit 5, so `tests/test_skeleton.py` imports each Appendix A module. Mac: 10 passed.
+- [ ] `uv run pytest` passes on both OSes. An empty suite makes pytest exit 5, so `tests/test_skeleton.py` imports each Appendix A module. Mac: 11 passed (`test_skeleton.py` and Windows's `test_smoke.py`). Windows: not recorded.
 - [x] Commit
 
 **Rules for `spintune/` code so it runs on both OSes:**

@@ -31,5 +31,5 @@
     0.333    21.0  63.0  0.010   5.7916e-05   4.9347e-05   +12.896%
     0.333    21.0  63.0  0.050   1.3964e-03   1.2331e-03   +13.068%
 3) Block reduction vs 4x4 expm, max |diff| = 7.2e-15
-   4x4 expm, 2000 slices: 10 ms per draw -> 1e7 draws = 27 core-h
-   2x2 block, 2000 slices, 1000 draws vectorised: 0.12 s per map point -> 1e4 points = 0.3 core-h
+   4x4 expm, 2000 slices: 11 ms per draw -> 1e7 draws = 30 core-h
+   2x2 block, 2000 slices, 1000 draws vectorised: 0.13 s per map point -> 1e4 points = 0.4 core-h

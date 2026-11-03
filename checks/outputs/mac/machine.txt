@@ -2,24 +2,27 @@ Machine: Darwin 25.3.0 arm64, Apple M4 Pro, 14 logical CPUs, Python 3.12.16
 
 | Script | Status | Wall time (s) |
 |---|---|---|
-| headroom_v4.py anchor_check.py | ok | 24.1 |
-| headroom_v4.py anchor_check.py --axis-descent | ok | 25.5 |
-| headroom_v4.py anchor_check.py --need-sized | ok | 24.3 |
-| headroom_v4.py anchor_check.py --stop-length 22.5 | ok | 23.3 |
-| anchor_check.py | ok | 12.3 |
-| RAYON_NUM_THREADS=1 qarray_timing.py | ok | 3.1 |
-| prior_check.py | ok | 25.1 |
-| hier_check.py | ok | 5.3 |
-| hier_check2.py | ok | 9.7 |
-| cz_v3_check.py | ok | 1.6 |
-| cz_v3_scan.py . | ok | 2.6 |
-| regime_check.py | ok | 3.8 |
-| bo_overhead.py | ok | 2.3 |
-| headroom_v3.py anchor_check.py | ok | 32.3 |
-| headroom_rough.py anchor_check.py | ok | 13.2 |
-| headroom_pitch.py anchor_check.py | ok | 13.2 |
-| cz_check.py | ok | 0.6 |
-| cz_pulse_check.py | ok | 0.7 |
-| review_v2_checks.py | ok | 0.6 |
+| headroom_v4.py anchor_check.py | ok | 37.1 |
+| headroom_v4.py anchor_check.py --axis-descent | ok | 33.7 |
+| headroom_v4.py anchor_check.py --need-sized | ok | 40.1 |
+| headroom_v4.py anchor_check.py --stop-length 22.5 | ok | 35.8 |
+| anchor_check.py | ok | 16.0 |
+| RAYON_NUM_THREADS=1 qarray_timing.py | ok | 3.8 |
+| prior_check.py | ok | 30.6 |
+| hier_check.py | ok | 7.3 |
+| hier_check2.py | ok | 12.6 |
+| cz_v3_check.py | ok | 2.2 |
+| cz_v3_scan.py . | ok | 3.0 |
+| regime_check.py | ok | 9.8 |
+| bo_overhead.py | ok | 3.2 |
+| qarray_units.py | ok | 1.1 |
+| qarray_recipe.py | ok | 0.5 |
+| sensor_spike.py | ok | 1.3 |
+| headroom_v3.py anchor_check.py | ok | 41.4 |
+| headroom_rough.py anchor_check.py | ok | 17.0 |
+| headroom_pitch.py anchor_check.py | ok | 18.1 |
+| cz_check.py | ok | 0.9 |
+| cz_pulse_check.py | ok | 0.8 |
+| review_v2_checks.py | ok | 0.9 |
 
 Skipped qdarts_check.py: needs the QDarts environment (PLAN.md Phase 3)

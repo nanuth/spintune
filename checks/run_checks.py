@@ -33,6 +33,10 @@ SCRIPTS = {
     "cz_v3_scan.py": ["."],
     "regime_check.py": [],
     "bo_overhead.py": [],
+    # PLAN.md 2.1 / 2.2: QArray units, Cdd/Cgd recipe, sensor spike.
+    "qarray_units.py": [],
+    "qarray_recipe.py": [],
+    "sensor_spike.py": [],
     # Kept only because the review documents cite them.
     "headroom_v3.py": ["anchor_check.py"],
     "headroom_rough.py": ["anchor_check.py"],
