@@ -1,0 +1,4 @@
+ID fleet:  T* mean  380 (med  371, p90  384)  hist mean  442 (med  417, p90  539)  fleet mean  573 (med  589, p90  692)  cold mean  563 (med  554, p90  704)
+   h = (C_cold - C_T*)/C_cold = 32%;  hist/cold = 0.79;  fleet/cold = 1.02;  T*/hist = 0.86
+wide fleet:  T* mean  445 (med  415, p90  537)  hist mean  492 (med  432, p90  639)  fleet mean  794 (med  838, p90 1125)  cold mean  765 (med  646, p90 1108)
+   h = (C_cold - C_T*)/C_cold = 42%;  hist/cold = 0.64;  fleet/cold = 1.04;  T*/hist = 0.90

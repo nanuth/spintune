@@ -1,0 +1,26 @@
+
+ID fleet, 300 cells. Means over finished runs; ratios over cells where both finished.
+  tuner                           px queries  RF ms abstain wrong px/cold time/cold
+  T* oracle start                313     4.0    208       1     0    0.65      0.46
+  T3 cold (spec)                 484     8.6    451       0     0    1.00      1.00
+  T3-M fleet mean                485     8.0    440       0     0    1.00      0.98
+  H chip history (cells 1-10)    416     5.9    319       2     0    0.86      0.71
+  H k=0                          450     7.7    410       0     0
+  H, period knowledge only       420     6.8    356       0     0    0.87      0.79
+  H, start knowledge only        415     6.6    343       1     0    0.86      0.76
+  H k=1                          468     6.2    327       0     0
+  H k=9                          401     5.4    286       0     0
+  oracle-start headroom vs T3: pixels 35%, RF time 54%;  pixel integration is 1.1% of T3's RF time
+
+wide fleet, 300 cells. Means over finished runs; ratios over cells where both finished.
+  tuner                           px queries  RF ms abstain wrong px/cold time/cold
+  T* oracle start                499     4.9    288       0     0    0.74      0.56
+  T3 cold (spec)                 678     9.2    514       2     4    1.00      1.00
+  T3-M fleet mean                646     8.5    507       2     1    0.95      0.99
+  H chip history (cells 1-10)    599     6.0    351       0     0    0.89      0.68
+  H k=0                          675     7.9    488       0     0
+  H, period knowledge only       637     6.8    392       0     0    0.94      0.76
+  H, start knowledge only        582     6.7    407       2     0    0.86      0.79
+  H k=1                          623     6.3    358       0     0
+  H k=9                          510     5.2    308       0     0
+  oracle-start headroom vs T3: pixels 26%, RF time 44%;  pixel integration is 1.3% of T3's RF time

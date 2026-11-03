@@ -1,0 +1,28 @@
+Machine: Windows 11 AMD64, AMD64 Family 26 Model 68 Stepping 0, AuthenticAMD, 24 logical CPUs, Python 3.12.13
+
+| Script | Status | Wall time (s) |
+|---|---|---|
+| headroom_v4.py anchor_check.py | ok | 32.6 |
+| headroom_v4.py anchor_check.py --axis-descent | ok | 28.9 |
+| headroom_v4.py anchor_check.py --need-sized | ok | 28.5 |
+| headroom_v4.py anchor_check.py --stop-length 22.5 | ok | 26.3 |
+| anchor_check.py | ok | 14.9 |
+| RAYON_NUM_THREADS=1 qarray_timing.py | ok | 6.3 |
+| prior_check.py | ok | 28.9 |
+| hier_check.py | ok | 7.2 |
+| hier_check2.py | ok | 12.1 |
+| cz_v3_check.py | ok | 5.6 |
+| cz_v3_scan.py . | ok | 4.9 |
+| regime_check.py | ok | 5.2 |
+| bo_overhead.py | ok | 16.3 |
+| qarray_units.py | ok | 2.7 |
+| qarray_recipe.py | ok | 2.1 |
+| sensor_spike.py | ok | 2.8 |
+| headroom_v3.py anchor_check.py | ok | 42.9 |
+| headroom_rough.py anchor_check.py | ok | 16.8 |
+| headroom_pitch.py anchor_check.py | ok | 17.0 |
+| cz_check.py | ok | 2.1 |
+| cz_pulse_check.py | ok | 2.8 |
+| review_v2_checks.py | ok | 2.7 |
+
+Skipped qdarts_check.py: needs the QDarts environment (PLAN.md Phase 3)

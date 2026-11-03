@@ -1,0 +1,7 @@
+oracle : mean   342 px, median   326, p90   377
+hist22 : mean   354 px, median   332, p90   425
+hist31 : mean   357 px, median   337, p90   421
+cold77 : mean   436 px, median   409, p90   535
+cost ratio oracle/cold = 0.78
+cost ratio hist22/cold = 0.81
+cost ratio hist31/cold = 0.82

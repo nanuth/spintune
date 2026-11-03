@@ -1,0 +1,15 @@
+Square exchange pulse, J = 5 MHz, t = 1/(2J) = 100 ns
+   dEz =    20 MHz -> best-local-Z CZ fidelity 0.99994
+   dEz =    50 MHz -> best-local-Z CZ fidelity 1.00000
+   dEz =   100 MHz -> best-local-Z CZ fidelity 1.00000
+   dEz =   300 MHz -> best-local-Z CZ fidelity 1.00000
+Quasi-static dJ/J with fixed corrections (dEz = 300 MHz):
+   dJ/J = 0.005: simulated F = 0.999988, analytic F0*(1-0.3(1-cos dphi)) = 0.999963
+   dJ/J = 0.010: simulated F = 0.999951, analytic F0*(1-0.3(1-cos dphi)) = 0.999852
+   dJ/J = 0.020: simulated F = 0.999803, analytic F0*(1-0.3(1-cos dphi)) = 0.999408
+   dJ/J = 0.050: simulated F = 0.998767, analytic F0*(1-0.3(1-cos dphi)) = 0.996307
+Pure-ZZ error model F = 1 - 0.8 sin^2(dphi/4) vs CPhase model 1 - 0.3(1 - cos dphi):
+   dJ/J = 0.005: 1-F simulated 1.234e-05 | pure-ZZ 1.234e-05 | CPhase 3.701e-05
+   dJ/J = 0.010: 1-F simulated 4.935e-05 | pure-ZZ 4.935e-05 | CPhase 1.480e-04
+   dJ/J = 0.020: 1-F simulated 1.974e-04 | pure-ZZ 1.974e-04 | CPhase 5.920e-04
+   dJ/J = 0.050: 1-F simulated 1.233e-03 | pure-ZZ 1.233e-03 | CPhase 3.693e-03

@@ -1,0 +1,5 @@
+n =  10 points: GP fit  4.09 s + acquisition  0.37 s =  4.46 s per step
+n =  50 points: GP fit  0.05 s + acquisition  0.05 s =  0.10 s per step
+n = 100 points: GP fit  0.05 s + acquisition  0.08 s =  0.13 s per step
+n = 200 points: GP fit  0.12 s + acquisition  0.14 s =  0.26 s per step
+n = 300 points: GP fit  0.17 s + acquisition  0.16 s =  0.34 s per step

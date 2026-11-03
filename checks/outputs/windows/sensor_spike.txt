@@ -16,9 +16,9 @@ using sign -1
  4  0.50  0.0 | 45.53 7.31 3.81 3.57 3.43 3.29 3.26 3.25     | 0.81/11.38 | False| -0.05..+1.20 | [0.123 0.124 0.247] fail
  4  0.50  0.2 | 3.93 5.47 1.34 1.20 2.01 1.00 1.02 1.22      | 0.25/1.37 | False| -4.83..+0.32 | [0.123 0.124 0.247] fail
 
-T=  0 mK  ray 65       :    0.31 ms/call  (4.78 us/px)
-T=  0 mK  window 32x32 :    0.79 ms/call  (0.77 us/px)
-T=  0 mK  window 64x64 :    2.29 ms/call  (0.56 us/px)
-T=300 mK  ray 65       :    0.29 ms/call  (4.49 us/px)
-T=300 mK  window 32x32 :    0.81 ms/call  (0.79 us/px)
-T=300 mK  window 64x64 :    2.34 ms/call  (0.57 us/px)
+T=  0 mK  ray 65       :    0.28 ms/call  (4.29 us/px)
+T=  0 mK  window 32x32 :    0.78 ms/call  (0.77 us/px)
+T=  0 mK  window 64x64 :    2.46 ms/call  (0.60 us/px)
+T=300 mK  ray 65       :    0.27 ms/call  (4.19 us/px)
+T=300 mK  window 32x32 :    0.79 ms/call  (0.77 us/px)
+T=300 mK  window 64x64 :    2.46 ms/call  (0.60 us/px)

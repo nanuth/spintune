@@ -32,7 +32,7 @@ QArray's Rust core (`qarray-rust-core` 1.3.1) has wheels for Python 3.10–3.12 
 | Install 3.12 | `uv python install 3.12` | `uv python install 3.12` |
 
 - [x] Mac: `brew install uv`, then `uv python install 3.12` (2 Nov: uv 0.13.6, CPython 3.12.16)
-- [x] Windows: `uv python install 3.12` (2 Nov: CPython 3.12.13, see `checks/outputs/windows/MACHINES.md`)
+- [x] Windows: `uv python install 3.12` (2 Nov: CPython 3.12.13, see `checks/outputs/windows/machine.txt`)
 
 Neither needs a system-wide 3.12: uv downloads its own, and the project pins it.
 
@@ -89,7 +89,7 @@ A0 is done when every `checks/` script reruns from the repo on **both laptops (M
 | `anchor_check.py` | Fixed 22.5 mV rule: 24/300 and 45/300 wrong; period-bounded rule: 0/300 at each spread |
 | `qarray_timing.py` | 2 dots: ~97 ms per 100×100, ~9.9 ms per 32×32 (machine-dependent). Mac (M4 Pro), one thread, over 4 runs: 84–99 / 9.0–11.1 ms; saved run in `checks/outputs/mac/qarray_timing.txt` |
 
-- [ ] Full run on Windows with `uv run python checks/run_checks.py`; it rewrites `checks/outputs/windows/`, replacing the hand-run files and `MACHINES.md`. Commit it and diff against `checks/outputs/mac/`. **Partial so far** (1d90046, 4 scripts by hand): `headroom_v4` and `anchor_check` are byte-identical to the Mac; `cz_v3_scan` differs in one entry at 2×10⁻¹³ (round-off). The Windows `qarray_timing` (59.5 ms) was unpinned, so it isn't comparable with §1.2 until the runner reruns it single-threaded. Counts and wrong-anchor tallies should match exactly across OSes. Timings will differ (the Windows machine has 24 threads; the 30 s figure is from 14 cores), so record the machine next to each timing.
+- [x] Full run on Windows with `uv run python checks/run_checks.py` (3 Nov): all 22 scripts ok; machine and wall times in `checks/outputs/windows/machine.txt`. Against `checks/outputs/mac/`: 16 outputs byte-identical, including every headroom, anchor, prior and hier count. The rest differ only in timings or round-off (`cz_v3_scan` 2×10⁻¹³; `cz_v3_check` and `review_v2_checks` in the 4th–8th significant digit). Windows single-threaded `qarray_timing`: 137 ms per 100×100, 14.7 ms per 32×32 (Mac 99 / 11.1). `cz_v3_check`'s 4×4 expm is 57 ms per draw here vs 11 ms on the Mac, so its core-hour estimate is machine-dependent. The three PLAN 2.1/2.2 outputs in 47f1b55 came from this Windows machine: the rerun reproduces them, and its sensor_spike speeds match theirs (~0.3 ms per ray; Mac 0.6–0.8).
 
 ### 1.4 Package skeleton and ignore rules
 
