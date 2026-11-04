@@ -5,15 +5,8 @@
 ## Where things stand
 
 - The repo holds the v5 design, its reviews and the `checks/` feasibility scripts. Phase 1 has added the `spintune/` skeleton, `pyproject.toml`, `uv.lock` and `tests/` (3 Nov); the Windows rerun of `checks/` is partial.
-- [§15.4](architecture/15-plan.md#154-schedule) planned W1 (28 Oct – 3 Nov) to end with the first sensor-only, metered end-to-end comparison (A0–A3, B1, R1 minimal, B2). None of it has started, so we are about **one week behind**, with 25 days to the final.
-- **Fixed dates ahead:**
-
-| Date | What |
-|---|---|
-| Fri 13 Nov | Submit the IBM Open Plan run (F4) |
-| Tue 17 Nov | Freeze tag ([§11.6](architecture/11-success-measurement.md#116-pre-registration)) |
-| Wed 25 – Thu 26 Nov | Demo and dry run |
-| Fri 27 Nov | Final |
+- Stage 1 of [§15.4](architecture/15-plan.md#154-stages) ends with the first sensor-only, metered end-to-end comparison (A0–A3, B1, R1 minimal, B2).
+- The only fixed date is the final, Fri 27 Nov.
 
 ---
 
@@ -109,7 +102,7 @@ A0 is done when every `checks/` script reruns from the repo on **both laptops (M
 
 ## Phase 2: Decisions to settle before A1/A2 code
 
-### 2.1 Where the sensor signal and noise come from (sensor-model spike, 1–2 h)
+### 2.1 Where the sensor signal and noise come from (sensor-model spike)
 
 As used in `checks/qarray_timing.py`, QArray's `WhiteNoise`, `TelegraphNoise` and `LatchingModel` are set per pixel and applied within one call. [§4.3](architecture/04-measurement-interface.md#43-simulation-behind-the-interface-design-call) needs noise and latching that carry over between queries in simulated instrument time, with the same exogenous random numbers shared across tuners. So:
 
@@ -224,20 +217,9 @@ Everything has a §7.2 default, so none of this blocks A1. Answers replace defau
 - [x] **QArray's sensor noise is off by default:** `noise_model=None` becomes `BaseNoiseModel()`, which adds zero. Just never pass one
 - [x] The existing `checks/` scripts stay scale-free at T = 0. They are unaffected and don't need porting
 
-### 2.3 New schedule
+### 2.3 Who owns which track
 
-W1's deliverable now lands in W2 at best.
-
-| Option | What it means |
-|---|---|
-| **Compress** | Fit the old W1 and W2 into the next ~8 days, with G0 and the reader freeze around 10–12 Nov; keep the 17 Nov freeze |
-| **Cut** | Apply the [§15.6](architecture/15-plan.md#156-cut-order-and-what-is-never-cut) cut order now, starting with drift, the full spread map, T6-NN/T-BO and the CNN reader; shrink the promises before spending contingency |
-
-- [ ] Pick one and update [§15.4](architecture/15-plan.md#154-schedule). The 13 Nov and 17 Nov dates should not slip silently.
-
-### 2.4 Who owns which track
-
-Two people, tracks A, B, R, D, E and F ([§15.2](architecture/15-plan.md#152-tracks-and-hour-caps-design-call)). The critical path is A1 → A2 → B1 → B2 → B4 → reader freeze → D1 → D2 → D3 → E2 → E3 ([§15.5](architecture/15-plan.md#155-critical-path)). F1 (the CZ Hamiltonian) depends only on A0.
+Two people, tracks A, B, R, D, E and F ([§15.2](architecture/15-plan.md#152-tracks)). The critical path is A1 → A2 → B1 → B2 → B4 → reader freeze → D1 → D2 → D3 → E2 → E3 ([§15.5](architecture/15-plan.md#155-critical-path)). F1 (the CZ Hamiltonian) depends only on A0.
 
 | Track | Owner |
 |---|---|
@@ -251,8 +233,8 @@ Two people, tracks A, B, R, D, E and F ([§15.2](architecture/15-plan.md#152-tra
 
 | Prerequisite | Needed by | Owner | Note |
 |---|---|---|---|
-| QDarts environment: Python 3.12, `qdarts==1.0.5`, `numpy<2`, `scipy<=1.12`, `cvxpy==1.5.2` | A4, W2 | _TBD_ | Kept separate from the main environment because of those pins. A second uv project, e.g. `workers/qdarts/`, with its own lockfile |
-| IBM Quantum account, Open Plan instance (us-east) and saved API token | F4, submit by 13 Nov | _TBD_ | Course Lab 0 (`Unit_0_ Activation Workshop/`) walks through it. Do it this week |
+| QDarts environment: Python 3.12, `qdarts==1.0.5`, `numpy<2`, `scipy<=1.12`, `cvxpy==1.5.2` | A4 | _TBD_ | Kept separate from the main environment because of those pins. A second uv project, e.g. `workers/qdarts/`, with its own lockfile |
+| IBM Quantum account, Open Plan instance (us-east) and saved API token | F4 | _TBD_ | Course Lab 0 (`Unit_0_ Activation Workshop/`) walks through it |
 | QDSD raw files (186 MB) and D-CSD (1.8 GB) | R3 | _TBD_ | Into the git-ignored `data/`. Raw files, never resized ([§7.6](architecture/07-fleet.md#76-external-real-device-data-sourced-none-is-22fdx)) |
 | Equal1's answers to Q1 (which gates are swept) and Q2 (how dot B loads) ([§14](architecture/14-questions-for-equal1.md)) | A1 device template | _TBD_ | The design has fallbacks, so nothing waits on them |
 
@@ -269,12 +251,12 @@ Two people, tracks A, B, R, D, E and F ([§15.2](architecture/15-plan.md#152-tra
 
 ## Order of work
 
-| # | Step | Phase | Estimate |
-|---|---|---|---|
-| 1 | Install uv and Python 3.12; write `pyproject.toml`; lock; rerun `checks/` | 1.1–1.3 | ~2 h |
-| 2 | Skeleton, ignore rules, doc fixes; commit | 1.4, 4 | ~1 h |
-| 3 | New schedule and track owners | 2.3, 2.4 | — |
-| 4 | Sensor-model spike, units mapping, then start A1 | 2.1, 2.2 | 1–2 h before A1 |
+| # | Step | Phase |
+|---|---|---|
+| 1 | Install uv and Python 3.12; write `pyproject.toml`; lock; rerun `checks/` | 1.1–1.3 |
+| 2 | Skeleton, ignore rules, doc fixes; commit | 1.4, 4 |
+| 3 | Track owners | 2.3 |
+| 4 | Sensor-model spike, units mapping, then start A1 | 2.1, 2.2 |
 
 **In parallel:** the IBM account (Phase 3), and F1 by whoever is not on the A1 → A2 path.
 

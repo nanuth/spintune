@@ -17,9 +17,9 @@
 | Sim-to-real gap | High | QDarts fleet, external data, sourced spreads; the honesty slide |
 | σ_die is low-confidence | Medium | Swept 0–150 mV |
 | T2 wins on reliability | Low–Medium | Reported. It's expensive in pixels by construction |
-| **Scope vs 180 h** | **High** | Hour caps ([§15.2](15-plan.md#152-tracks-and-hour-caps-design-call)); the protected outcome first; reader v1 before any CNN; cut order |
+| **Scope vs 180 h** | **High** | The protected outcome first; reader v1 before any CNN; cut order ([§15.6](15-plan.md#156-cut-order-and-what-is-never-cut)) |
 | QDarts install or speed problems | Low–Medium | Verified install; lineshape fallback |
-| IBM queue or access problems | Low | Submit by 13 Nov; `FakeTorino` fallback |
+| IBM queue or access problems | Low | Submit as soon as F3 works on `FakeTorino`; `FakeTorino` fallback |
 
 ---
 

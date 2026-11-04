@@ -7,7 +7,7 @@
 | **Event** | Equal1 × Fsas "Compute the Future", Timișoara HPC Hackathon (InnoWeek 2026). Idea-only pitch Tue 27 Oct 2026; final Fri 27 Nov 2026 at Qiskit Fall Fest |
 | **Team** | Duo, 20+ h/week each through November (~180 focused hours). Laptops (Apple M4 Pro, 14 cores) |
 | **Judging constraints** | Visible Qiskit use is required. HPC use is optional |
-| **Version** | v5, 25 Oct 2026. Changes from v4: the shortcut and native-count baselines run on the stress set ([§12](12-compute-plan.md), B4); the G0 branch uses the lower CI bound of both h and h_t ([§11.4](11-success-measurement.md#114-gates-thresholds-frozen-at-the-tagged-commit)); one primary C1 pass condition ([§11.4](11-success-measurement.md#114-gates-thresholds-frozen-at-the-tagged-commit)); T6's reliability gap to T2 is reported; the cascade check for T6's wrong declarations ([§11.5](11-success-measurement.md#115-statistics)); hold success over 10 s ([§11.2](11-success-measurement.md#112-success-for-one-cell)); persistent latching corrected to Γ_B ≤ 10² s⁻¹ ([§4.3](04-measurement-interface.md#43-simulation-behind-the-interface-design-call)); a week-1 fallback deliverable (B2). Added 26 Oct: [§18](18-scaling.md), scaling |
+| **Version** | v5, 25 Oct 2026. Changes from v4: the shortcut and native-count baselines run on the stress set ([§12](12-compute-plan.md), B4); the G0 branch uses the lower CI bound of both h and h_t ([§11.4](11-success-measurement.md#114-gates-thresholds-frozen-at-the-tagged-commit)); one primary C1 pass condition ([§11.4](11-success-measurement.md#114-gates-thresholds-frozen-at-the-tagged-commit)); T6's reliability gap to T2 is reported; the cascade check for T6's wrong declarations ([§11.5](11-success-measurement.md#115-statistics)); hold success over 10 s ([§11.2](11-success-measurement.md#112-success-for-one-cell)); persistent latching corrected to Γ_B ≤ 10² s⁻¹ ([§4.3](04-measurement-interface.md#43-simulation-behind-the-interface-design-call)); a fallback deliverable (B2). Added 26 Oct: [§18](18-scaling.md), scaling |
 | **Related documents** | Feasibility reviews (`FEASIBILITY_REVIEW*.md`, `CROSS_REVIEW.md`); evidence scripts (`checks/README.md`) |
 | **Source of truth** | This document: *what and why*. `bobi_resources/PLAN.md`: the task checklist, to be rebuilt from [§15.3](15-plan.md#153-tasks-needs--hard-dependencies-done--the-check-that-must-pass). `bobi_resources/SPINTUNE-2.md`: pitch notes, to be updated per [§15.1](15-plan.md#151-before-the-pitch-tue-27-oct-idea-only) |
 | **Status** | Design. Feasibility checks only (scripts in `checks/`, [§1.2](01-design-decisions-and-evidence.md#12-evidence-status-25-oct-2026)). No tuner has been built. Every number from `checks/` is an idealized estimate (noiseless cells, perfect reader, one specified policy), not a result. Every target is a hypothesis, frozen before the test fleet is generated ([§11.6](11-success-measurement.md#116-pre-registration)) |
@@ -105,7 +105,7 @@ What we need, what we ask, how the work is scheduled, and what can go wrong.
 |---|---|---|
 | 13 | [13. Prerequisites, and which we can get ourselves](13-prerequisites.md) | What the project needs and whether we can get it ourselves. |
 | 14 | [14. Questions for Equal1 (most important first)](14-questions-for-equal1.md) | Twelve questions for Equal1, most important first, including the structured data request. |
-| 15 | [15. Plan](15-plan.md) | Pitch prep, tracks and hour caps, tasks A0–F4, schedule, critical path, cut order, demo. |
+| 15 | [15. Plan](15-plan.md) | Pitch prep, tracks, tasks A0–F4, stages, critical path, cut order, demo. |
 | 16 | [16. Risks](16-risks.md) | Risks with severity and mitigation. |
 
 ### Reference
@@ -177,9 +177,9 @@ What we need, what we ask, how the work is scheduled, and what can go wrong.
 - [14. Questions for Equal1 (most important first)](14-questions-for-equal1.md)
 - [15. Plan](15-plan.md)
   - [15.1 Before the pitch (Tue 27 Oct, idea-only)](15-plan.md#151-before-the-pitch-tue-27-oct-idea-only)
-  - [15.2 Tracks and hour caps [design call]](15-plan.md#152-tracks-and-hour-caps-design-call)
+  - [15.2 Tracks](15-plan.md#152-tracks)
   - [15.3 Tasks ("Needs" = hard dependencies; "Done" = the check that must pass)](15-plan.md#153-tasks-needs--hard-dependencies-done--the-check-that-must-pass)
-  - [15.4 Schedule](15-plan.md#154-schedule)
+  - [15.4 Stages](15-plan.md#154-stages)
   - [15.5 Critical path](15-plan.md#155-critical-path)
   - [15.6 Cut order, and what is never cut](15-plan.md#156-cut-order-and-what-is-never-cut)
   - [15.7 Demo (27 Nov)](15-plan.md#157-demo-27-nov)

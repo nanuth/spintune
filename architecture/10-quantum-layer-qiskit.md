@@ -27,7 +27,7 @@ Qiskit use is required, so this layer is protected from cuts. The IBM hardware r
   - a *descriptive* comparison with the backend-reported two-qubit error, with the protocol and timestamp.
 - **Why only descriptive:** IBM's published metric includes a single-qubit Clifford layer and may come from an earlier calibration ([IBM QPU information](https://quantum.cloud.ibm.com/docs/en/guides/qpu-information)). A disagreement triggers investigation; it does not fail the run.
 - **What this shows:** that our benchmarking code runs end to end on real hardware. It says nothing about spin qubits, and is labelled that way.
-- **Schedule:** develop on `FakeTorino`, submit by 13 Nov, use ≤ 3 QPU minutes.
+- **Order:** develop on `FakeTorino`, then submit; use ≤ 3 QPU minutes.
 - **Fallback:** the same code on the fake backend, plus any recorded run.
 
 ## 10.3 Course content deliberately not used

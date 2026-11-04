@@ -77,7 +77,7 @@ The fleet is hierarchical: **wafer → chip (die) → cell**.
 
 **How we use them:**
 - Use the raw data, record how each set was selected, and never resize.
-- **Labelling is timed before it is promised.** Label 5–10 D-CSD scans first, including ambiguous ones, with the other team member reviewing a subset. Commit to 50 only if that rate fits the external-data cap ([§15.2](15-plan.md#152-tracks-and-hour-caps-design-call)).
+- **Labelling is timed before it is promised.** Label 5–10 D-CSD scans first, including ambiguous ones, with the other team member reviewing a subset. Commit to 50 only once that rate is known.
 - **Static replay is observation evidence only.** A stored scan can't show what the device would have done under a different scan order, dwell time, averaging request or latch state.
 - If public data are used to tune preprocessing or thresholds, the test scans are frozen first and never touched.
 - QDarts widens the physics tested (tunnel coupling, non-constant charging energy). It is an equilibrium simulator, so it doesn't validate our noise and latching wrapper.

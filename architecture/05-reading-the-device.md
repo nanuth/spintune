@@ -101,7 +101,7 @@ A window alone can't tell (1,1) from (2,2) [measured]. Every tuner must therefor
 
 ## 5.3 Reader contract [design call]
 
-**Reader v1 is signal processing**, shared by all tuners. A small CNN (U-Net-lite with a 1D ray head) replaces it only if, on validation, the CNN lowers the wrong-anchor rate, or the abstention rate at an equal wrong-anchor rate, by a margin fixed before training (default 25% relative). The choice is frozen at the end of week 2, before the training-fleet logs are generated (D1), and recorded in the tag.
+**Reader v1 is signal processing**, shared by all tuners. A small CNN (U-Net-lite with a 1D ray head) replaces it only if, on validation, the CNN lowers the wrong-anchor rate, or the abstention rate at an equal wrong-anchor rate, by a margin fixed before training (default 25% relative). The choice is frozen before the training-fleet logs are generated (D1), and recorded in the tag.
 
 - **Rays (v1):** a matched-filter step detector. It takes the difference of means over n samples on each side and thresholds it against the noise floor measured on the ray's own flat stretches.
 - **Windows (v1):** gradient and structure-tensor orientation separate steep (dot A) from shallow (dot B) lines. Hough plus least squares fits the bounding lines. Inter-dot lines are the short segments joining the two families.

@@ -24,7 +24,7 @@
 14. **Charge period in the in-distribution fleets:** P ≈ 15 mV ± 17% per cell. The design tolerance of 7.5–30 mV sets **P_max = 30 mV**. The 5–40 mV range is a separate "wide-period" scenario.
 15. **C2 runs two labelled scenarios** (Equal1's measured Si/SiGe device; a 22FDX projection) and composes noise channels instead of adding infidelities ([§8.3](08-physics-layer-cz-error-budget.md#83-noise-and-error-budget-components)).
 16. **RF is simulated; DC is only a re-costing** of the same query log.
-17. **Scope:** planning caps per track adding up to 180 h, including 20 h of contingency ([§15.2](15-plan.md#152-tracks-and-hour-caps-design-call)). If a track doesn't fit, its promise shrinks before the contingency is spent.
+17. **Scope:** if the work doesn't fit, promises shrink in a fixed cut order, and the protected outcome is never cut ([§15.6](15-plan.md#156-cut-order-and-what-is-never-cut)).
 18. **6-dot run:** a stretch goal, conditional on Equal1 confirming such a layout.
 
 ## 1.2 Evidence status (25 Oct 2026)

@@ -33,21 +33,17 @@
 - [ ] **Hand Equal1 the structured data request** ([§14](14-questions-for-equal1.md) Q3–Q5) at the pitch.
 - [ ] **Rehearse** the [§14](14-questions-for-equal1.md) questions.
 
-## 15.2 Tracks and hour caps [design call]
+## 15.2 Tracks
 
-| Track | Content | Cap |
-|---|---|---:|
-| A | Simulation, interface, evaluator (A4, the QDarts worker, counts against Track R's external cap) | 30 h |
-| B | Evidence rule and baselines (B1 ≈ 12 h, B2–B4 ≈ 13 h) | 25 h |
-| R | Reader v1 (15 h); QDarts and external data, a small study (15 h) | 30 h |
-| D | Fleet learning | 15 h |
-| E | Scoring and statistics | 25 h |
-| F | Qiskit (protected, off the critical path) | 20 h |
-| — | Presentation and reproduction | 15 h |
-| — | Contingency | 20 h |
-| | **Total** | **180 h** |
-
-These are planning caps, not measured estimates. If a track won't fit its cap, shrink what it promises before spending the contingency.
+| Track | Content |
+|---|---|
+| A | Simulation, interface, evaluator, and the QDarts worker (A4) |
+| B | Evidence rule and baselines |
+| R | Reader v1; QDarts and external data, a small study |
+| D | Fleet learning |
+| E | Scoring and statistics |
+| F | Qiskit (protected, off the critical path) |
+| — | Presentation and reproduction |
 
 ## 15.3 Tasks ("Needs" = hard dependencies; "Done" = the check that must pass)
 
@@ -77,8 +73,8 @@ These are planning caps, not measured estimates. If a track won't fit its cap, s
   - **Done:** G1 certificate tests (a) and (c). Until B1 is done, slides quote only the noiseless descent result.
 - **B2. T★ and T3, then T3-M and T3-H, with reader v1.**
   - **Needs:** B1, R1.
-  - **Done:** **the first sensor-only end-to-end comparison**: T★, T3 and T3-H on the pilot, reaching and verifying (1,1), with pixels, queries and RF time. This is the week-1 objective.
-  - **Week-1 fallback, decided now:** if A2 or R1 slips, W1 ends with the same comparison using the oracle reader (B1's first stage), labelled oracle-assisted. The sensor-only version moves to the start of W2 and must land before G0.
+  - **Done:** **the first sensor-only end-to-end comparison**: T★, T3 and T3-H on the pilot, reaching and verifying (1,1), with pixels, queries and RF time.
+  - **Fallback, decided now:** if A2 or R1 isn't ready, run the same comparison first with the oracle reader (B1's first stage), labelled oracle-assisted. The sensor-only version must still land before G0.
 - **B3. T0, T2 (simple mosaic fit), T2-N, and the T3-L(ℓ) sweep.**
   - **Needs:** B1.
   - **Done:** all run end to end on the pilot; a first cost–risk curve on validation (the curve that is quoted comes from the stress set, B4).
@@ -96,11 +92,11 @@ These are planning caps, not measured estimates. If a track won't fit its cap, s
   - **Done:** kept only if it beats v1 by the [§5.3](05-reading-the-device.md#53-reader-contract-design-call) margin on validation; otherwise dropped, and the reason recorded.
 - **R3. External data.** Open a few raw QDSD and D-CSD files and map their labels into the reader contract. Run the QDSD single-dot counting experiment. Time 5–10 D-CSD labels (with a second review on a subset), then decide whether to label 50.
   - **Needs:** R1.
-  - **Done:** numbers in the results table, labelling rate recorded, within the 15 h cap (shared with A4).
+  - **Done:** numbers in the results table, labelling rate recorded.
 
 **Track D: fleet learning**
 - **D1. Training-fleet tuning logs.** T3 with the frozen reader over the training fleet.
-  - **Needs:** B2, and the reader choice frozen at the end of week 2 (R1, or R2 if kept).
+  - **Needs:** B2, and the reader choice frozen (R1, or R2 if kept).
   - **Done:** one trace per cell; success and wrong-declaration rates reported.
 - **D2. Fit the hierarchical prior from verified logs**, plus the unfiltered-log ablation.
   - **Needs:** D1.
@@ -144,23 +140,22 @@ These are planning caps, not measured estimates. If a track won't fit its cap, s
 - Samplomatic twirling;
 - a dashboard.
 
-## 15.4 Schedule
+## 15.4 Stages
 
-| Week | Tasks | Gate at the end of the week |
+| Stage | Tasks | Gate at the end of the stage |
 |---|---|---|
-| W1 (28 Oct – 3 Nov) | A0, A1, A2 core (ledger, cost model, domain, tile cache, white noise), A3, B1, R1 minimal (ray step detector, window line fit), B2 | G1 except the persistent-state tests; **the first sensor-only, metered end-to-end comparison (T★, T3, T3-H) with reader v1** |
-| W2 (4 – 10 Nov) | A2 rest (telegraph, 1/f, latching, common random numbers, partition test), A4, B3, B4, R1 complete (abstention, "bad" class), R2 (optional), start R3, F1, F2 | Rest of G1; G2; **sensor-only G0: does history add value in pixels and in time, and are wrong declarations controlled?** The branch is chosen and **the reader is frozen** |
-| W3 (11 – 17 Nov) | D1, D2, D3, E1, E2; F3; **submit F4 by 13 Nov** | **Freeze tag by 17 Nov** |
-| W4 (18 – 24 Nov) | E3, E4, R3; presentation; stretch if time | G3, G3h, G4 |
-| 25 – 26 Nov | Demo and dry run | — |
-| 27 Nov | Final | — |
+| 1 | A0, A1, A2 core (ledger, cost model, domain, tile cache, white noise), A3, B1, R1 minimal (ray step detector, window line fit), B2 | G1 except the persistent-state tests; **the first sensor-only, metered end-to-end comparison (T★, T3, T3-H) with reader v1** |
+| 2 | A2 rest (telegraph, 1/f, latching, common random numbers, partition test), A4, B3, B4, R1 complete (abstention, "bad" class), R2 (optional), start R3, F1, F2 | Rest of G1; G2; **sensor-only G0: does history add value in pixels and in time, and are wrong declarations controlled?** The branch is chosen and **the reader is frozen** |
+| 3 | D1, D2, D3, E1, E2; F3, F4 | **Freeze tag** |
+| 4 | E3, E4, R3; presentation; stretch if time | G3, G3h, G4 |
+| Final (27 Nov) | Demo ([§15.7](#157-demo-27-nov)) | — |
 
-Planned load is about 40 h a week (two people × 20 h) in W1–W3, with W4 lighter to leave room for the presentation. The 20 h contingency covers overruns; if it runs out, cut in the [§15.6](#156-cut-order-and-what-is-never-cut) order.
+Stages have no dates: a task starts when its Needs are done. If the work won't fit, cut in the [§15.6](#156-cut-order-and-what-is-never-cut) order.
 
 ## 15.5 Critical path
 
 **A1 → A2 → B1 → B2 → B4 → reader freeze → D1 → D2 → D3 → E2 → E3.**
-- Reader v1 (R1) joins the path at B2, because the week-1 comparison is sensor-only.
+- Reader v1 (R1) joins the path at B2, because B2's comparison is sensor-only.
 - The harness (E1) must be finished before E2: comparator selection and the frozen analysis script use it.
 - The CNN (R2) is off the path. Track F, B3, A4 and R3 sit off the path too. Give them to whoever is blocked.
 
