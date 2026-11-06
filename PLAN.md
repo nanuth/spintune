@@ -10,7 +10,7 @@
 
 | Date | What |
 |---|---|
-| Fri 13 Nov | Submit the IBM Open Plan run (F4) |
+| ~~Fri 13 Nov~~ No fixed date | IBM run (F4): only a test, after F3 works on `FakeTorino` (decided 6 Nov; [§10.2](architecture/10-quantum-layer-qiskit.md#102-ibm-hardware-run-a-scheduled-demonstration-with-a-fallback)) |
 | Tue 17 Nov | Freeze tag ([§11.6](architecture/11-success-measurement.md#116-pre-registration)) |
 | Wed 25 – Thu 26 Nov | Demo and dry run |
 | Fri 27 Nov | Final |
@@ -252,7 +252,7 @@ Two people, tracks A, B, R, D, E and F ([§15.2](architecture/15-plan.md#152-tra
 | Prerequisite | Needed by | Owner | Note |
 |---|---|---|---|
 | QDarts environment: Python 3.12, `qdarts==1.0.5`, `numpy<2`, `scipy<=1.12`, `cvxpy==1.5.2` | A4, W2 | _TBD_ | Kept separate from the main environment because of those pins. A second uv project, e.g. `workers/qdarts/`, with its own lockfile |
-| IBM Quantum account, Open Plan instance (us-east) and saved API token | F4, submit by 13 Nov | _TBD_ | Course Lab 0 (`Unit_0_ Activation Workshop/`) walks through it. Do it this week |
+| IBM Quantum account, Open Plan instance (us-east) and saved API token | F4, after F3 works on `FakeTorino` | _TBD_ | Course Lab 0 (`Unit_0_ Activation Workshop/`) walks through it. Only needed for the final hardware test |
 | QDSD raw files (186 MB) and D-CSD (1.8 GB) | R3 | _TBD_ | Into the git-ignored `data/`. Raw files, never resized ([§7.6](architecture/07-fleet.md#76-external-real-device-data-sourced-none-is-22fdx)) |
 | Equal1's answers to Q1 (which gates are swept) and Q2 (how dot B loads) ([§14](architecture/14-questions-for-equal1.md)) | A1 device template | _TBD_ | The design has fallbacks, so nothing waits on them |
 
